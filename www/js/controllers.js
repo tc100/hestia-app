@@ -2,19 +2,23 @@ angular.module('starter.controllers', [])
 
 .controller('DashCtrl', function($scope) {})
 
-.controller('ChatsCtrl', function($scope, Chats) {
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
-  //
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
+.controller('RestaurantesCtrl', function($scope, Restaurantes, $ionicLoading) {
+  $scope.restaurantes =[];
+  $ionicLoading.show({
+    template: "<ion-spinner icon='spiral'></ion-spinner>"
+  });
+  Restaurantes.getListaRestaurantes().then(function successCallback(data){
+    for(x in data.data){
+      $scope.restaurantes.push(data.data[x]);
+    }
+    $ionicLoading.hide();
+  })
+})
 
-  $scope.chats = Chats.all();
-  $scope.remove = function(chat) {
-    Chats.remove(chat);
-  };
+.controller('LoginCtrl', function($scope, $state) {
+  $scope.login = function(){
+    $state.go('tab.restaurantes');
+  }
 })
 
 .controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
