@@ -23,12 +23,31 @@ angular.module('starter.controllers', [])
       $state.go('tab.restaurantes');
     }).catch(function(error) {
       console.error("Authentication failed:", error);
+      alert(error);
     });
   }
 
   $scope.registrar = function(){
     $state.go('registrar');
   }
+
+  $scope.loginFacebook = function(){
+    $scope.authObj.$signInWithRedirect("facebook").then(function() {
+      // Never called because of page redirect
+    }).catch(function(error) {
+      console.error("Authentication failed:", error);
+      alert(error);
+    });
+  }
+
+  $scope.authObj.$onAuthStateChanged(function(firebaseUser) {
+    if (firebaseUser) {
+      console.log("Signed in as:", firebaseUser.uid);
+      $state.go("tab.restaurantes");
+    } else {
+      console.log("Signed out");
+    }
+  });
 })
 
 .controller('RegisterCtrl', function($scope, $state, $firebaseAuth) {
@@ -42,6 +61,7 @@ angular.module('starter.controllers', [])
           $state.go('tab.restaurantes');
       }).catch(function(error) {
           console.error("Error: ", error);
+          alert(error);
       });
   }
 })
