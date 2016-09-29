@@ -11,13 +11,8 @@
     width: 125px;
 }
 
-.social-login {
-    position: fixed;
-    bottom: 0;
-}
-
 #login-background{
-    background-color: #C84C00;
+    background-color:#C84C00;/*rgba(255,128,85,1); */
 }
 
 .content h1{
@@ -26,14 +21,31 @@
 }
 
 .button-hestia{
+    background-color: #C84C00;
+    color: white;
+}
+
+.button-hestia-disabled{
     background-color: rgba(78,30,0,0.2);
 }
+
 .list-inset-hestia{
     margin: 0 !important;
     background-color: white;
 
 }
-
 .list-inset-hestia label{
     border-bottom: 1px solid #C84C00 !important;
+}
+
+#btnRegistrar{
+    width: 100% !important;
+    text-align: center;
+    font-weight: bold;
+    color:rgb(220,220,220);
+}
+
+/*Registrar*/
+.form-registrar label{
+    border-bottom: 1px solid grey !important;
 }

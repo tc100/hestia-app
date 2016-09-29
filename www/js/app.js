@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'firebase'])
 .constant('ApiEndpoint', {
   url: 'http://hestia-api.mybluemix.net/apihestia'
 })
@@ -39,6 +39,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     url: '/login',
     templateUrl: 'templates/login.html',
     controller: 'LoginCtrl'
+  })
+
+  .state('registrar', {
+    url: '/registrar',
+    templateUrl: 'templates/registrar.html',
+    controller: 'RegisterCtrl'
   })
 
   // setup an abstract state for the tabs directive

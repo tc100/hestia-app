@@ -8,16 +8,27 @@
     <link rel="manifest" href="manifest.json">
     <link href="lib/ionic/css/ionic.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
-    <link href="lib/ion-md-input/css/ion-md-input.min.css" rel="stylesheet">
-    <link href="lib/ionic-material/dist/ionic.material.min.css" rel="stylesheet">
+  <!--  <link href="lib/ion-md-input/css/ion-md-input.min.css" rel="stylesheet">
+-->    <link href="lib/ionic-material/dist/ionic.material.min.css" rel="stylesheet">
 
     <script src="lib/ionic/js/ionic.bundle.js"></script>
     <script src="cordova.js"></script>
     <script src="js/app.js"></script>
     <script src="js/controllers.js"></script>
     <script src="js/services.js"></script>
-    <script src="lib/ionic-material/dist/ionic.material.min.js"></script>
-    <script src="lib/ion-md-input/js/ion-md-input.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.3.0/firebase.js"></script>
+    <script src="https://cdn.firebase.com/libs/angularfire/2.0.2/angularfire.min.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyAlftK6644EOW2tmNz4lZq8TWvIGThMA2w",
+        authDomain: "hestia-e5357.firebaseapp.com",
+        databaseURL: "https://hestia-e5357.firebaseio.com",
+        storageBucket: "hestia-e5357.appspot.com",
+        messagingSenderId: "360916467136"
+      };
+      firebase.initializeApp(config);
+    </script>
   <!--  <script src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
 -->  </head>
   <body ng-app="starter">

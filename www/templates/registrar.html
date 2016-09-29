@@ -1,0 +1,27 @@
+<ion-view view-title="Registrar">
+    <ion-content>
+        <div class="padding">
+            <div class="list form-registrar">
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Nome</span>
+                    <input type="text" placeholder="João" ng-model="firstname" ng-required="true">
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Sobrenome</span>
+                    <input type="text" placeholder="da Silva" ng-model="lastname" ng-required="true">
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Email</span>
+                    <input type="text" placeholder="joaodasilva@hestia.br" ng-model="email" ng-required="true">
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Senha</span>
+                    <input type="password" placeholder="********" ng-model="password" ng-required="true">
+                </label>
+            </div>
+            <button class="button button-block button-hestia" ng-click="registrar(firstname,lastname,email,password)">
+                Registrar
+            </button>
+        </div>
+    </ion-content>
+</ion-view>
