@@ -52,6 +52,24 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     abstract: true,
     templateUrl: 'templates/menu.html'
   })
+  .state('app.perfil', {
+    url: '/perfil',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/perfil.html',
+        controller: 'PerfilCtrl'
+      }
+    }
+  })
+  .state('app.perfiledit', {
+    url: '/perfiledit',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/perfil-editar.html',
+        controller: 'PerfilEdtCtrl'
+      }
+    }
+  })
 
   .state('app.restaurantes', {
     url: '/restaurantes',

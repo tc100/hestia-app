@@ -66,6 +66,12 @@ angular.module('starter.controllers', [])
   }
 })
 
+
+
+.controller('PerfilCtrl', function($scope, $stateParams) {})
+
+.controller('PerfilEdtCtrl', function($scope, $stateParams) {})
+
 .controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
   $scope.chat = Chats.get($stateParams.chatId);
 })
