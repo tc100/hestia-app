@@ -15,7 +15,7 @@ angular.module('starter.controllers', [])
   })
 })
 
-.controller('LoginCtrl', function($scope, $state, $firebaseAuth) {
+.controller('LoginCtrl', function($scope, $state, $firebaseAuth, Users) {
   $scope.authObj = $firebaseAuth();
   $scope.login = function(email,password){
     $scope.authObj.$signInWithEmailAndPassword(email, password).then(function(firebaseUser) {
@@ -43,6 +43,7 @@ angular.module('starter.controllers', [])
   $scope.authObj.$onAuthStateChanged(function(firebaseUser) {
     if (firebaseUser) {
       console.log("Signed in as:", firebaseUser.uid);
+      Users.getUserProfile(firebaseUser);
       $state.go("tab.restaurantes");
     } else {
       console.log("Signed out");
@@ -50,14 +51,13 @@ angular.module('starter.controllers', [])
   });
 })
 
-.controller('RegisterCtrl', function($scope, $state, $firebaseAuth) {
+.controller('RegisterCtrl', function($scope, $state, $firebaseAuth, Users) {
   $scope.authObj = $firebaseAuth();
   $scope.registrar = function(name, lastname,email,password){
-    console.log("Email: " + $scope.email);
-    console.log("Senha: " + $scope.password);
     $scope.authObj.$createUserWithEmailAndPassword(email,password)
       .then(function(firebaseUser) {
           console.log("User " + firebaseUser.uid + " created successfully!");
+          Users.addNewUser(email, name, lastname, firebaseUser.uid);
           $state.go('tab.restaurantes');
       }).catch(function(error) {
           console.error("Error: ", error);
