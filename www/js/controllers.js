@@ -64,7 +64,7 @@ angular.module('starter.controllers', [])
   }
 })
 
-.controller('MenuCtrl', function($scope, $firebaseAuth, $ionicLoading, Users, $firebaseObject){
+.controller('MenuCtrl', function($scope, $firebaseAuth, $ionicLoading, Users, $firebaseObject, $cookies){
   $scope.authObj = $firebaseAuth();
   $scope.authObj.$onAuthStateChanged(function(firebaseUser) {
     if (firebaseUser) {
@@ -72,17 +72,30 @@ angular.module('starter.controllers', [])
       var ref = firebase.database().ref('users/'+ firebaseUser.uid)
       var userObj = $firebaseObject(ref);
       userObj.$loaded().then(function() {
-        $scope.user = userObj;
-        sessionStorage.user = $scope.user;
+        $scope.user = {};
+        angular.forEach(userObj, function(value, key) {
+          $scope.user[key] = value;
+          $cookies.put(key,value);
+        });
+
+
       });
     } else {
-      sessionStorage.user = null;
       console.log("Signed out");
     }
   });
 
-  console.log("user: " + sessionStorage.user);
 })
+
+.controller('PerfilCtrl', function($scope, $stateParams, $cookies) {
+  $scope.user = {
+    'nome': $cookies.get('nome'),
+    'sobrenome': $cookies.get('sobrenome'),
+    'email':$cookies.get('email')
+  };
+})
+
+.controller('PerfilEdtCtrl', function($scope, $stateParams) {})
 
 .controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
   $scope.chat = Chats.get($stateParams.chatId);

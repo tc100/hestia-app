@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'firebase'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'firebase','ngCookies'])
 .constant('ApiEndpoint', {
   url: 'http://hestia-api.mybluemix.net/apihestia'
 })
@@ -23,6 +23,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+
   });
 })
 
@@ -53,6 +54,24 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     templateUrl: 'templates/menu.html',
     controller: 'MenuCtrl'
   })
+  .state('app.perfil', {
+    url: '/perfil',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/perfil.html',
+        controller: 'PerfilCtrl'
+      }
+    }
+  })
+  .state('app.perfiledit', {
+    url: '/perfiledit',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/perfil-editar.html',
+        controller: 'PerfilEdtCtrl'
+      }
+    }
+  })
 
   .state('app.restaurantes', {
     url: '/restaurantes',
@@ -61,8 +80,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         templateUrl: 'templates/tab-restaurantes.html',
         controller: 'RestaurantesCtrl'
       }
-    }, params: {
-      id: null
     }
   })
 
@@ -127,6 +144,5 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('login');
-  sessionStorage.user = null;
 
 });
