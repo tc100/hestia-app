@@ -49,3 +49,22 @@
 .form-registrar label{
     border-bottom: 1px solid grey !important;
 }
+
+/*Menu */
+.menu {
+    background-color: #C84C00 !important;
+}
+
+.menu ion-item:first-child{
+    height: 6em;
+    background-color: rgba(78,30,0,0.2);
+    font-size: 1em;
+}
+.menu ion-item:first-child a{
+    padding-left: 5em !important;
+}
+
+.menu ion-item{
+    color: white;
+    font-weight:400;
+}

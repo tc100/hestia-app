@@ -2,7 +2,7 @@ angular.module('starter.controllers', [])
 
 .controller('DashCtrl', function($scope) {})
 
-.controller('RestaurantesCtrl', function($scope, Restaurantes, $ionicLoading) {
+.controller('RestaurantesCtrl', function($scope, Restaurantes, $ionicLoading, $firebaseAuth, $firebaseObject) {
   $scope.restaurantes =[];
   $ionicLoading.show({
     template: "<ion-spinner icon='spiral'></ion-spinner>"
@@ -12,15 +12,14 @@ angular.module('starter.controllers', [])
       $scope.restaurantes.push(data.data[x]);
     }
     $ionicLoading.hide();
-  })
+  });
+
 })
 
 .controller('LoginCtrl', function($scope, $state, $firebaseAuth, Users) {
   $scope.authObj = $firebaseAuth();
   $scope.login = function(email,password){
     $scope.authObj.$signInWithEmailAndPassword(email, password).then(function(firebaseUser) {
-      console.log("Signed in as:", JSON.stringify(firebaseUser));
-      $state.go('app.restaurantes');
     }).catch(function(error) {
       console.error("Authentication failed:", error);
       alert(error);
@@ -43,7 +42,6 @@ angular.module('starter.controllers', [])
   $scope.authObj.$onAuthStateChanged(function(firebaseUser) {
     if (firebaseUser) {
       console.log("Signed in as:", firebaseUser.uid);
-      Users.getUserProfile(firebaseUser);
       $state.go("app.restaurantes");
     } else {
       console.log("Signed out");
@@ -64,6 +62,26 @@ angular.module('starter.controllers', [])
           alert(error);
       });
   }
+})
+
+.controller('MenuCtrl', function($scope, $firebaseAuth, $ionicLoading, Users, $firebaseObject){
+  $scope.authObj = $firebaseAuth();
+  $scope.authObj.$onAuthStateChanged(function(firebaseUser) {
+    if (firebaseUser) {
+      console.log("Signed in as:", firebaseUser.uid);
+      var ref = firebase.database().ref('users/'+ firebaseUser.uid)
+      var userObj = $firebaseObject(ref);
+      userObj.$loaded().then(function() {
+        $scope.user = userObj;
+        sessionStorage.user = $scope.user;
+      });
+    } else {
+      sessionStorage.user = null;
+      console.log("Signed out");
+    }
+  });
+
+  console.log("user: " + sessionStorage.user);
 })
 
 .controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {

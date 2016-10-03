@@ -50,7 +50,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   .state('app', {
     url: '/app',
     abstract: true,
-    templateUrl: 'templates/menu.html'
+    templateUrl: 'templates/menu.html',
+    controller: 'MenuCtrl'
   })
 
   .state('app.restaurantes', {
@@ -60,6 +61,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         templateUrl: 'templates/tab-restaurantes.html',
         controller: 'RestaurantesCtrl'
       }
+    }, params: {
+      id: null
     }
   })
 
@@ -124,5 +127,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('login');
+  sessionStorage.user = null;
 
 });

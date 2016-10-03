@@ -13,22 +13,35 @@
   </ion-side-menu-content>
 
   <ion-side-menu side="left">
-    <ion-header-bar class="bar-stable">
-      <h1 class="title">Hestia</h1>
-    </ion-header-bar>
-    <ion-content>
-      <ion-list>
-        <ion-item menu-close href="#/app/profile">
-          Perfil
+    <ion-content class="menu">
+      <ion-list class="list">
+        <ion-item menu-close href="#/app/profile" class="item-avatar">
+          <img src="../img/profile.jpg" />
+          {{user.nome}} {{user.sobrenome}}
         </ion-item>
-        <ion-item menu-close href="#/app/restaurantes">
+        <ion-item menu-close href="#/app/restaurantes" class="item-icon-left">
+          <i class="icon ion-fork"></i>
           Restaurantes
         </ion-item>
-        <ion-item menu-close href="#/app/browse">
+        <ion-item menu-close href="#/app/favoritos" class="item-icon-left">
+          <i class="icon ion-star"></i>
+          Favoritos
+        </ion-item>
+        <ion-item menu-close href="#/app/browse" class="item-icon-left">
+          <i class="icon ion-android-list"></i>
           Historico
         </ion-item>
-        <ion-item menu-close href="#/app/playlists">
-          Cartoes
+        <ion-item menu-close href="#/app/pagamento" class="item-icon-left">
+          <i class="icon ion-card"></i>
+          Pagamento
+        </ion-item>
+        <ion-item menu-close href="#/app/leitor" class="item-icon-left">
+          <i class="icon ion-qr-scanner"></i>
+          Leitor QR Code
+        </ion-item>
+        <ion-item menu-close href="#/app/logout" class="item-icon-left" ng-click="authObj.$signOut()">
+          <i class="icon ion-log-out"></i>
+          Sair
         </ion-item>
       </ion-list>
     </ion-content>
