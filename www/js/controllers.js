@@ -20,7 +20,7 @@ angular.module('starter.controllers', [])
   $scope.login = function(email,password){
     $scope.authObj.$signInWithEmailAndPassword(email, password).then(function(firebaseUser) {
       console.log("Signed in as:", JSON.stringify(firebaseUser));
-      $state.go('tab.restaurantes');
+      $state.go('app.restaurantes');
     }).catch(function(error) {
       console.error("Authentication failed:", error);
       alert(error);
@@ -44,7 +44,7 @@ angular.module('starter.controllers', [])
     if (firebaseUser) {
       console.log("Signed in as:", firebaseUser.uid);
       Users.getUserProfile(firebaseUser);
-      $state.go("tab.restaurantes");
+      $state.go("app.restaurantes");
     } else {
       console.log("Signed out");
     }
@@ -58,7 +58,7 @@ angular.module('starter.controllers', [])
       .then(function(firebaseUser) {
           console.log("User " + firebaseUser.uid + " created successfully!");
           Users.addNewUser(email, name, lastname, firebaseUser.uid);
-          $state.go('tab.restaurantes');
+          $state.go('app.restaurantes');
       }).catch(function(error) {
           console.error("Error: ", error);
           alert(error);

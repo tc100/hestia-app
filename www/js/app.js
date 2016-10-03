@@ -47,8 +47,25 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     controller: 'RegisterCtrl'
   })
 
+  .state('app', {
+    url: '/app',
+    abstract: true,
+    templateUrl: 'templates/menu.html'
+  })
+
+  .state('app.restaurantes', {
+    url: '/restaurantes',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/tab-restaurantes.html',
+        controller: 'RestaurantesCtrl'
+      }
+    }
+  })
+
+
   // setup an abstract state for the tabs directive
-  .state('tab', {
+/*  .state('tab', {
     url: '/tab',
     abstract: true,
     templateUrl: 'templates/tabs.html'
@@ -103,7 +120,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         controller: 'ListaRestaurantesCtrl'
       }
     }
-  });
+  })*/;
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('login');
