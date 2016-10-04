@@ -72,6 +72,24 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       }
     }
   })
+  .state('app.pagamento', {
+    url: '/pagamento',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/pagamento.html',
+        controller: 'PagamentoCtrl'
+      }
+    }
+  })
+  .state('app.cartao', {
+    url: '/cartao',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/cartao.html',
+        controller: 'CartaoCtrl'
+      }
+    }
+  })
 
   .state('app.restaurantes', {
     url: '/restaurantes',
