@@ -1,33 +1,34 @@
 <ion-view view-title="Editar Perfil">
     <ion-content>
-      <button class="button button-block button-hestia item-avatar">
+      <button class="button button-block button-light item-avatar">
         <img src="img/profile.jpg">
         Trocar foto
       </button>
-      <br>
-      <div class="list">
-        <div class="item item-input-inset">
-          <label class="item-input-wrapper">
-          <input type="text" placeholder="João" ng-model="firstname" ng-required="true">
-          </label>
+      <div class="padding">
+        <div class="list">
+          <div class="item item-input-inset">
+            <label class="item-input-wrapper">
+            <input type="text" placeholder="João" ng-model="firstname" ng-required="true">
+            </label>
+          </div>
+          <div class="item item-input-inset">
+            <label class="item-input-wrapper">
+            <input type="text" placeholder="da Silva" ng-model="lastname" ng-required="true">
+            </label>
+          </div>
+          <div class="item item-input-inset">
+            <label class="item-input-wrapper">
+            <input type="email" placeholder="joaodasilva@hestia.br" ng-model="email" ng-required="true">
+            </label>
+          </div>
+          <div class="item item-input-inset">
+            <label class="item-input-wrapper col col-50">
+              <input type="password" placeholder="********" ng-model="password" ng-required="true">
+            </label>
+            <button class="button button-small button-hestia col col-50">
+                Trocar
+            </button>
         </div>
-        <div class="item item-input-inset">
-          <label class="item-input-wrapper">
-          <input type="text" placeholder="da Silva" ng-model="lastname" ng-required="true">
-          </label>
-        </div>
-        <div class="item item-input-inset">
-          <label class="item-input-wrapper">
-          <input type="email" placeholder="joaodasilva@hestia.br" ng-model="email" ng-required="true">
-          </label>
-        </div>
-        <div class="item item-input-inset">
-          <label class="item-input-wrapper col col-50">
-            <input type="password" placeholder="********" ng-model="password" ng-required="true">
-          </label>
-          <button class="button button-small button-hestia col col-50">
-              Trocar
-          </button>
       </div>
     </ion-content>
 </ion-view>

@@ -3,7 +3,7 @@
 ==================================*/
 .app-icon {
     background-color: #fff;
-    background: url('../img/hestia-logo-login.png') center;
+    background: url('img/hestia-logo-login.png') center;
     background-size: cover;
     border-radius: 50%;
     height: 125px;

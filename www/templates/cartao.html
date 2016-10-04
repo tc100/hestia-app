@@ -1,31 +1,38 @@
 <ion-view view-title="Adicionar Cartão">
     <ion-content>
-      <div class="list">
-        <div class="item item-input-inset">
-          <label class="item-input-wrapper">
-          <input type="text" placeholder="xxxx xxxx xxxx xxxx" ng-model="numcartao" ng-required="true">
-          </label>
-        </div>
-        <div class="item item-input-inset">
-          <label class="item-input-wrapper">
-          <input type="text" placeholder="000" ng-required="true">
-          </label>
-        </div>
-        <div class="item item-input-inset">
-          <label class="item-input-wrapper">
-          <input type="text" placeholder="Joao da Silva" ng-model="nomecartao" ng-required="true">
-          </label>
-        </div>
-        <div class="item item-input-inset">
-          <label class="item-input-wrapper col col-50">
-            Mes
-            <input type="text" placeholder="Agosto" ng-model="mescartao" ng-required="true">
+      <div class="padding">
+        <div class="list">
+          <div class="item item-input-inset">
+            <label class="item-input-wrapper">
+              Nome no cartão
+              <input type="text" placeholder="Joao da Silva" ng-model="nomecartao" ng-required="true">
+            </label>
+          </div>
+          <div class="item item-input-inset">
+            <label class="item-input-wrapper col col-66">
+              Número do cartão
+            <input type="text" placeholder="xxxx xxxx xxxx xxxx" ng-model="numcartao" ng-required="true">
           </label>
           <div class = "col"></div>
-          <label class="item-input-wrapper col col-33">
-            Ano
-            <input type="text" placeholder="2016" ng-model="anocartao" ng-required="true">
-          </label>
+          <label class="item-input-wrapper col col-25">
+              CVC <br>
+            <input type="text" placeholder="000" ng-required="true">
+            </label>
+          </div>
+          <div class="item item-input-inset">
+            <label class="item-input-wrapper col col-66">
+              Mês
+              <input type="text" placeholder="Agosto" ng-model="mescartao" ng-required="true">
+            </label>
+            <div class = "col"></div>
+            <label class="item-input-wrapper col col-25">
+              Ano
+              <input type="text" placeholder="2016" ng-model="anocartao" ng-required="true">
+            </label>
+        </div>
+        <button class="button button-block button-hestia" ng-click="registrar(firstname,lastname,email,password)">
+            Registrar
+        </button>
       </div>
     </ion-content>
 </ion-view>
