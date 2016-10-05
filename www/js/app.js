@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'firebase','ngCookies'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'firebase','ngCookies', 'ngCordova'])
 .constant('ApiEndpoint', {
   url: 'http://hestia-api.mybluemix.net/apihestia'
 })
@@ -54,6 +54,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     templateUrl: 'templates/menu.html',
     controller: 'MenuCtrl'
   })
+  .state('app.restaurantes', {
+    url: '/restaurantes',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/tab-restaurantes.html',
+        controller: 'RestaurantesCtrl'
+      }
+    }
+  })
   .state('app.perfil', {
     url: '/perfil',
     views: {
@@ -90,13 +99,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       }
     }
   })
-
-  .state('app.restaurantes', {
-    url: '/restaurantes',
+  .state('app.leitor', {
+    url: '/leitor',
     views: {
       'menuContent': {
-        templateUrl: 'templates/tab-restaurantes.html',
-        controller: 'RestaurantesCtrl'
+        templateUrl: 'templates/leitor.html',
+        controller: 'LeitorCtrl'
       }
     }
   })

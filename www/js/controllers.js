@@ -64,6 +64,32 @@ angular.module('starter.controllers', [])
   }
 })
 
+.controller('LeitorCtrl', function($scope, $state, $cookies, $cordovaBarcodeScanner) {
+  $scope.user = {
+    'nome': $cookies.get('nome'),
+    'sobrenome': $cookies.get('sobrenome'),
+    'email':$cookies.get('email')
+  };
+
+  document.addEventListener("deviceready", function () {
+   $cordovaBarcodeScanner
+     .scan()
+     .then(function(barcodeData) {
+       // Success! Barcode data is here
+       alert("JSON: " + barcodeData.text);
+     }, function(error) {
+       // An error occurred
+     });
+ },
+  {
+      "preferFrontCamera" : true, // iOS and Android
+      "showFlipCameraButton" : true, // iOS and Android
+      "prompt" : "Scanneie o QRCode", // supported on Android only
+      "formats" : "QR_CODE" // default: all but PDF_417 and RSS_EXPANDED
+    //  "orientation" : "landscape"  Android only (portrait|landscape), default unset so it rotates with the device
+  });
+})
+
 .controller('MenuCtrl', function($scope, $firebaseAuth, $ionicLoading, Users, $firebaseObject, $cookies){
   $scope.authObj = $firebaseAuth();
   $scope.authObj.$onAuthStateChanged(function(firebaseUser) {
