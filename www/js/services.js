@@ -6,6 +6,12 @@ angular.module('starter.services', [])
         return $http.get(ApiEndpoint.url+"/estabelecimentos").then(function(data){
             return data;
         })
+      },
+      getCardapio: function (idRestaurante, cardapio){
+        return $http.get(ApiEndpoint.url+'/cardapio?restaurante='+idRestaurante+'&cardapio='+cardapio)
+        .then(function(data){
+            return data;
+        })
       }
     }
 })

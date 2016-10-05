@@ -1,0 +1,18 @@
+<ion-view view-title="Cardapio - {{cardapio.nome}}">
+  <ion-content>
+    <ion-list>
+      <div ng-repeat="categoria in cardapio.categorias">
+        <div class="item-divider"type="item-text-wrap" >
+          {{categoria.nome}}
+        </div>
+        <div ng-repeat="prato in categoria.pratos">
+          <ion-item class="item-remove-animate item-icon-right" type="item-text-wrap" >
+            <label>{{prato.nome}}</label>
+            <label class = "pull-right">R$ {{prato.preco}}</label>
+            <i class="icon ion-chevron-right icon-accessory"></i>
+          </ion-item>
+        </div>
+      </div>
+    </ion-list>
+  </ion-content>
+</ion-view>

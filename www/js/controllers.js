@@ -149,6 +149,20 @@ angular.module('starter.controllers', [])
   });
 })
 
+.controller('CardapioCtrl', function($scope,$stateParams, $state, Restaurantes, $cookies, $ionicLoading, $firebaseAuth, $firebaseObject){
+  var restaurante='57ba4c654eb63d4ba8a21367';
+  var cardapio='domingo';
+  $scope.cardapio ={};
+  $ionicLoading.show({
+    template: "<ion-spinner icon='spiral'></ion-spinner>"
+  });
+  Restaurantes.getCardapio(restaurante,cardapio).then(function successCallback(data){
+    $scope.cardapio = data.data;
+    $ionicLoading.hide();
+  });
+
+})
+
 .controller('CartaoCtrl', function($scope, $stateParams, $state, Users, $cookies) {
   $scope.registrar = function(cartao){
     Users.addCard(cartao.numero, cartao.nome, cartao.mes, cartao.ano, $cookies.get('id'));

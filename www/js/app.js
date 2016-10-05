@@ -108,6 +108,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       }
     }
   })
+  .state('app.cardapio', {
+    url: '/cardapio',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/cardapio.html',
+        controller: 'CardapioCtrl'
+      }
+    }
+  })
 
 
   // setup an abstract state for the tabs directive
