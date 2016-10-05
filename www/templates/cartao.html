@@ -5,13 +5,13 @@
           <div class="item item-input-inset">
             <label class="item-input-wrapper">
               Nome no cartão
-              <input type="text" placeholder="Joao da Silva" ng-model="nomecartao" ng-required="true">
+              <input type="text" placeholder="Joao da Silva" ng-model="cartao.nome" ng-required="true">
             </label>
           </div>
           <div class="item item-input-inset">
             <label class="item-input-wrapper col col-66">
               Número do cartão
-            <input type="text" placeholder="xxxx xxxx xxxx xxxx" ng-model="numcartao" ng-required="true">
+            <input type="text" placeholder="xxxx xxxx xxxx xxxx" ng-model="cartao.numero" ng-required="true">
           </label>
           <div class = "col"></div>
           <label class="item-input-wrapper col col-25">
@@ -20,17 +20,17 @@
             </label>
           </div>
           <div class="item item-input-inset">
-            <label class="item-input-wrapper col col-66">
+            <label class="item-input-wrapper col col-25">
               Mês
-              <input type="text" placeholder="Agosto" ng-model="mescartao" ng-required="true">
+              <input type="text" placeholder="02" ng-model="cartao.mes" ng-required="true">
             </label>
             <div class = "col"></div>
-            <label class="item-input-wrapper col col-25">
+            <label class="item-input-wrapper col col-66"> 
               Ano
-              <input type="text" placeholder="2016" ng-model="anocartao" ng-required="true">
+              <input type="text" placeholder="2022" ng-model="cartao.ano" ng-required="true">
             </label>
         </div>
-        <button class="button button-block button-hestia" ng-click="registrar(firstname,lastname,email,password)">
+        <button class="button button-block button-hestia" ng-click="registrar(cartao)">
             Registrar
         </button>
       </div>

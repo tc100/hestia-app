@@ -97,6 +97,7 @@ angular.module('starter.controllers', [])
       console.log("Signed in as:", firebaseUser.uid);
       var ref = firebase.database().ref('users/'+ firebaseUser.uid)
       var userObj = $firebaseObject(ref);
+      $cookies.put("id",firebaseUser.uid);
       userObj.$loaded().then(function() {
         $scope.user = {};
         angular.forEach(userObj, function(value, key) {
@@ -121,11 +122,38 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('PerfilEdtCtrl', function($scope, $stateParams) {})
+.controller('PerfilEdtCtrl', function($scope, $stateParams, $state, $cookies, Users) {
+  $scope.user = {
+    'nome': $cookies.get('nome'),
+    'sobrenome': $cookies.get('sobrenome'),
+    'email':$cookies.get('email')
+  };
+  $scope.atualizar = function(user){
+    Users.updateUser(user.email, user.nome, user.sobrenome, $cookies.get('id'));
+    angular.forEach(user, function(value, key) {
+      $cookies.put(key,value);
+    });
+    $state.go('app.perfil');
+  }
+})
 
-.controller('PagamentoCtrl', function($scope, $stateParams) {})
+.controller('PagamentoCtrl', function($scope, $firebaseAuth,$firebaseObject, $cookies){
+  var ref = firebase.database().ref('users/'+$cookies.get('id')+'/cartoes')
+  var userObj = $firebaseObject(ref);
+  userObj.$loaded().then(function() {
+    $scope.cartao = {};
+    angular.forEach(userObj, function(value, key) {
+      $scope.cartao[key] = value;
+      console.log(key+":"+value);
+    });
+  });
+})
 
-.controller('CartaoCtrl', function($scope, $stateParams) {})
+.controller('CartaoCtrl', function($scope, $stateParams, $state, Users, $cookies) {
+  $scope.registrar = function(cartao){
+    Users.addCard(cartao.numero, cartao.nome, cartao.mes, cartao.ano, $cookies.get('id'));
+  }
+})
 
 .controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
   $scope.chat = Chats.get($stateParams.chatId);
