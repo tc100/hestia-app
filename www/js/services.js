@@ -37,11 +37,14 @@ angular.module('starter.services', [])
           });
         },
         addCard: function(numero, nome, mes, ano, userId){
-            firebase.database().ref('users/' + userId).child('cartoes').set({
+           var nomeCard = numero+nome;
+           var childPush = firebase.database().ref('users/' + userId).child('cards').push();
+           childPush.set({
                 "numero": numero,
                 "nome": nome,
                 "mes": mes,
-                "ano": ano
+                "ano": ano,
+                "ativo": true
             });
         }
     }

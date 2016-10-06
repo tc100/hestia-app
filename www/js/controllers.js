@@ -114,12 +114,22 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('PerfilCtrl', function($scope, $stateParams, $cookies) {
+.controller('PerfilCtrl', function($scope, $stateParams,$firebaseAuth,$firebaseObject, $cookies) {
   $scope.user = {
     'nome': $cookies.get('nome'),
     'sobrenome': $cookies.get('sobrenome'),
     'email':$cookies.get('email')
   };
+  var ref = firebase.database().ref('users/'+$cookies.get('id')+'/cards')
+  var userObj = $firebaseObject(ref);
+  $scope.cartoes = [];
+  userObj.$loaded().then(function() {
+    angular.forEach(userObj, function(value, key) {
+      if (value.ativo){
+        $scope.cartoes.push(value);
+      }
+    });
+  });
 })
 
 .controller('PerfilEdtCtrl', function($scope, $stateParams, $state, $cookies, Users) {
@@ -136,15 +146,16 @@ angular.module('starter.controllers', [])
     $state.go('app.perfil');
   }
 })
-
+ 
 .controller('PagamentoCtrl', function($scope, $firebaseAuth,$firebaseObject, $cookies){
-  var ref = firebase.database().ref('users/'+$cookies.get('id')+'/cartoes')
+  var ref = firebase.database().ref('users/'+$cookies.get('id')+'/cards')
   var userObj = $firebaseObject(ref);
+  $scope.cartoes = [];
   userObj.$loaded().then(function() {
-    $scope.cartao = {};
     angular.forEach(userObj, function(value, key) {
-      $scope.cartao[key] = value;
-      console.log(key+":"+value);
+      if (value.ativo){
+        $scope.cartoes.push(value);
+      }
     });
   });
 })

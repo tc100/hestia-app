@@ -3,9 +3,9 @@
       <div class="item-divider">
         Cartões Cadastrados
       </div>
-      <<div class="item item-icon-right">
+      <div class="item item-icon-right" ng-repeat="cartao in cartoes">
         <i class="icon ion-card"></i>
-        <h2><b>{{cartao.nome}} ...{{cartao.numero}}</b></h2>
+        <label><b>{{cartao.nome}} ...</b><label class= "pull-right">{{cartao.numero}}</label></label>
       </div>
       <a class="item item-icon-right" href = "#/app/cartao">
         <i class="icon ion-plus"></i>
@@ -13,3 +13,4 @@
       </a>
   </ion-content>
 </ion-view>
+ 
