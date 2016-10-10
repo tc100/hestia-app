@@ -2,7 +2,7 @@ angular.module('starter.controllers', [])
 
 .controller('DashCtrl', function($scope) {})
 
-.controller('RestaurantesCtrl', function($scope, Restaurantes, $ionicLoading, $firebaseAuth, $firebaseObject) {
+.controller('RestaurantesCtrl', function($scope, Restaurantes, $ionicLoading) {
   $scope.restaurantes =[];
   $ionicLoading.show({
     template: "<ion-spinner icon='spiral'></ion-spinner>"
@@ -13,7 +13,6 @@ angular.module('starter.controllers', [])
     }
     $ionicLoading.hide();
   });
-
 })
 
 .controller('LoginCtrl', function($scope, $state, $firebaseAuth, Users) {
@@ -64,12 +63,8 @@ angular.module('starter.controllers', [])
   }
 })
 
-.controller('LeitorCtrl', function($scope, $state, $cookies, $cordovaBarcodeScanner) {
-  $scope.user = {
-    'nome': $cookies.get('nome'),
-    'sobrenome': $cookies.get('sobrenome'),
-    'email':$cookies.get('email')
-  };
+.controller('LeitorCtrl', function($scope, $state, $cordovaBarcodeScanner, userRef) {
+  $scope.user = userRef;
 
   document.addEventListener("deviceready", function () {
    $cordovaBarcodeScanner
@@ -90,77 +85,43 @@ angular.module('starter.controllers', [])
   });
 })
 
-.controller('MenuCtrl', function($scope, $firebaseAuth, $ionicLoading, Users, $firebaseObject, $cookies){
+.controller('MenuCtrl', function($scope, $firebaseAuth, $ionicLoading, Users, $firebaseObject, userRef){
   $scope.authObj = $firebaseAuth();
   $scope.authObj.$onAuthStateChanged(function(firebaseUser) {
     if (firebaseUser) {
       console.log("Signed in as:", firebaseUser.uid);
       var ref = firebase.database().ref('users/'+ firebaseUser.uid)
       var userObj = $firebaseObject(ref);
-      $cookies.put("id",firebaseUser.uid);
-      userObj.$loaded().then(function() {
-        $scope.user = {};
-        angular.forEach(userObj, function(value, key) {
-          $scope.user[key] = value;
-          $cookies.put(key,value);
+      userObj.$bindTo($scope, "user").then(function() {
+        angular.forEach($scope.user, function(value, key) {
+          userRef[key] = value;
         });
-
-
       });
     } else {
+      userRef = {};
       console.log("Signed out");
     }
   });
 
 })
 
-.controller('PerfilCtrl', function($scope, $stateParams,$firebaseAuth,$firebaseObject, $cookies) {
-  $scope.user = {
-    'nome': $cookies.get('nome'),
-    'sobrenome': $cookies.get('sobrenome'),
-    'email':$cookies.get('email')
-  };
-  var ref = firebase.database().ref('users/'+$cookies.get('id')+'/cards')
-  var userObj = $firebaseObject(ref);
-  $scope.cartoes = [];
-  userObj.$loaded().then(function() {
-    angular.forEach(userObj, function(value, key) {
-      if (value.ativo){
-        $scope.cartoes.push(value);
-      }
-    });
-  });
+.controller('PerfilCtrl', function($scope, userRef) {
+  $scope.user = userRef;
 })
 
-.controller('PerfilEdtCtrl', function($scope, $stateParams, $state, $cookies, Users) {
-  $scope.user = {
-    'nome': $cookies.get('nome'),
-    'sobrenome': $cookies.get('sobrenome'),
-    'email':$cookies.get('email')
-  };
+.controller('PerfilEdtCtrl', function($scope, $state, Users, userRef) {
+  $scope.user = userRef;
   $scope.atualizar = function(user){
-    Users.updateUser(user.email, user.nome, user.sobrenome, $cookies.get('id'));
-    angular.forEach(user, function(value, key) {
-      $cookies.put(key,value);
-    });
+    Users.updateUser(user.email, user.nome, user.sobrenome, $scope.user.$id);
     $state.go('app.perfil');
   }
 })
- 
-.controller('PagamentoCtrl', function($scope, $firebaseAuth,$firebaseObject, $cookies){
-  var ref = firebase.database().ref('users/'+$cookies.get('id')+'/cards')
-  var userObj = $firebaseObject(ref);
-  $scope.cartoes = [];
-  userObj.$loaded().then(function() {
-    angular.forEach(userObj, function(value, key) {
-      if (value.ativo){
-        $scope.cartoes.push(value);
-      }
-    });
-  });
+
+.controller('PagamentoCtrl', function($scope, userRef){
+  $scope.cartoes = userRef.cards;
 })
 
-.controller('CardapioCtrl', function($scope,$stateParams, $state, Restaurantes, $cookies, $ionicLoading, $firebaseAuth, $firebaseObject){
+.controller('CardapioCtrl', function($scope, $state, Restaurantes, $ionicLoading){
   var restaurante='57ba4c654eb63d4ba8a21367';
   var cardapio='domingo';
   $scope.cardapio ={};
@@ -174,9 +135,10 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('CartaoCtrl', function($scope, $stateParams, $state, Users, $cookies) {
+.controller('CartaoCtrl', function($scope, $state, Users, userRef) {
   $scope.registrar = function(cartao){
-    Users.addCard(cartao.numero, cartao.nome, cartao.mes, cartao.ano, $cookies.get('id'));
+    Users.addCard(cartao.numero, cartao.nome, cartao.mes, cartao.ano, userRef.$id);
+    $state.go('app.perfil');
   }
 })
 
