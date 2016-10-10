@@ -1,8 +1,6 @@
 angular.module('starter.controllers', [])
 
-.controller('DashCtrl', function($scope) {})
-
-.controller('RestaurantesCtrl', function($scope, Restaurantes, $ionicLoading) {
+.controller('RestaurantesCtrl', function($scope, Restaurantes, $ionicLoading, $state) {
   $scope.restaurantes =[];
   $ionicLoading.show({
     template: "<ion-spinner icon='spiral'></ion-spinner>"
@@ -13,6 +11,11 @@ angular.module('starter.controllers', [])
     }
     $ionicLoading.hide();
   });
+})
+
+.controller('RestauranteDetailCtrl', function($scope, Restaurantes, $ionicLoading, $stateParams, $state){
+  console.log("restaurante: " + JSON.stringify($stateParams.restaurante));
+  $scope.restaurante = JSON.parse($stateParams.restaurante);
 })
 
 .controller('LoginCtrl', function($scope, $state, $firebaseAuth, Users) {
@@ -144,10 +147,4 @@ angular.module('starter.controllers', [])
 
 .controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
   $scope.chat = Chats.get($stateParams.chatId);
-})
-
-.controller('AccountCtrl', function($scope) {
-  $scope.settings = {
-    enableFriends: true
-  };
 });
