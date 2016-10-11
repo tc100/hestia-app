@@ -6,7 +6,7 @@
       <div class="item item-avatar">
         <img src="img/ben.png">
         <h2>{{user.nome}} {{user.sobrenome}}</h2>
-        <p><a href="#/app/perfiledit">Editar cadastro</a></p>
+        <p><a ng-click="editarCadastro()">Editar cadastro</a></p>
       </div>
       <div class="item item-icon-right">
         <i class="icon ion-email"></i>
@@ -19,7 +19,7 @@
         <i class="icon ion-card"></i>
         <label><b>{{cartao.nome}} ...</b><label class= "pull-right">{{cartao.numero}}</label></label>
       </div>
-      <a class="item item-icon-right" href = "#/app/cartao">
+      <a class="item item-icon-right" href="#/app/cartao">
         <i class="icon ion-plus"></i>
         <h2>Adicionar novo cartão</h2>
       </a>

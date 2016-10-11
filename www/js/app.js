@@ -10,7 +10,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   url: 'http://hestia-api.mybluemix.net/apihestia'
 })
 .value('userRef', {})
-
+.config(function($ionicConfigProvider) {
+    $ionicConfigProvider.backButton.text('').icon('ion-ios-arrow-back');
+})
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -58,12 +60,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     }
   })
   .state('app.restauranteDetail', {
-    url: '/restaurantesDetail/:restaurante',
+    url: '/restaurantesDetail',
     views: {
       'menuContent': {
         templateUrl: 'templates/restauranteDetail.html',
         controller: 'RestauranteDetailCtrl'
       }
+    },
+    params: {
+      restaurante: null
     }
   })
   .state('app.perfil', {

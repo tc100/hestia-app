@@ -7,15 +7,26 @@ angular.module('starter.controllers', [])
   });
   Restaurantes.getListaRestaurantes().then(function successCallback(data){
     for(x in data.data){
+      data.data[x].avaliacao = 0;
+      data.data[x].comentarios = 0;
+      data.data[x].distancia = 0;
       $scope.restaurantes.push(data.data[x]);
     }
     $ionicLoading.hide();
   });
+
+  $scope.loadRestaurante = function(restaurante){
+    $state.go('app.restauranteDetail',{'restaurante': restaurante});
+  }
 })
 
 .controller('RestauranteDetailCtrl', function($scope, Restaurantes, $ionicLoading, $stateParams, $state){
-  console.log("restaurante: " + JSON.stringify($stateParams.restaurante));
-  $scope.restaurante = JSON.parse($stateParams.restaurante);
+  if($stateParams.restaurante == null){
+    $state.go('app.restaurantes');
+  }else{
+    console.log("restaurante: " + JSON.stringify($stateParams.restaurante));
+    $scope.restaurante = $stateParams.restaurante;
+  }
 })
 
 .controller('LoginCtrl', function($scope, $state, $firebaseAuth, Users) {
@@ -108,8 +119,11 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('PerfilCtrl', function($scope, userRef) {
+.controller('PerfilCtrl', function($scope, userRef,  $state) {
   $scope.user = userRef;
+  $scope.editarCadastro = function(){
+    $state.go('app.perfiledit');
+  }
 })
 
 .controller('PerfilEdtCtrl', function($scope, $state, Users, userRef) {

@@ -1,12 +1,29 @@
 <ion-view view-title="Restaurantes">
-  <ion-content>
-    <ion-list>
-      <ion-item class="item-remove-animate item-icon-right" ng-repeat="restaurante in restaurantes" type="item-text-wrap" href="#/app/restaurantesDetail/{{restaurante}}">
+  <ion-content class="lista-restaurantes">
+    <div class="card" ng-repeat="restaurante in restaurantes"  >
+      <div class="item item-restaurante" ng-click="loadRestaurante(restaurante)">
+        <h2>{{restaurante.nomerestaurante}}<br />
+        <sub>{{restaurante.endereco}}</sub></h2>
+        <div class="icons-restaurants">
+          <i class="icon ion-ios-star"></i> {{restaurante.avaliacao}}
+          <i class="icon ion-chatbox"></i> {{restaurante.comentarios}}
+          <i class="icon ion-location"></i> {{restaurante.distancia}}
+        </div>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </div>
+    </div>
+    <!--<ion-list-card>
+      <ion-item class="item-remove-animate" ng-repeat="restaurante in restaurantes" type="item-text-wrap" href="#/app/restaurantesDetail/{{restaurante}}">
 
-        <h2>{{restaurante.nomerestaurante}}</h2>
-        <p>{{restaurante.endereco}}</p>
+        <h2>{{restaurante.nomerestaurante}}<br />
+        <sub>{{restaurante.endereco}}</sub></h2>
+        <div class="icons-restaurants">
+          <i class="icon ion-ios-star"></i> {{restaurante.avaliacao}}
+          <i class="icon ion-chatbox"></i> {{restaurante.comentarios}}
+          <i class="icon ion-location"></i> {{restaurante.distancia}}
+        </div>
         <i class="icon ion-chevron-right icon-accessory"></i>
       </ion-item>
-    </ion-list>
+    </ion-list-card>-->
   </ion-content>
 </ion-view>
