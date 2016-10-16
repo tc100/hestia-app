@@ -71,6 +71,33 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       restaurante: null
     }
   })
+  .state('app.restauranteDetail.cardapio', {
+    url: '/cardapio',
+    views: {
+      'tabsContent': {
+        templateUrl: 'templates/cardapio.html',
+        controller: 'CardapioCtrl'
+      }
+    }
+  })
+  .state('app.restauranteDetail.mapa', {
+    url: '/mapa',
+    views: {
+      'tabsContent': {
+        templateUrl: 'templates/mapa.html',
+        controller: 'MapaCtrl'
+      }
+    }
+  })
+  .state('app.restauranteDetail.avaliacoes', {
+    url: '/avaliacoes',
+    views: {
+      'tabsContent': {
+        templateUrl: 'templates/avaliacoes.html',
+        controller: 'AvaliacoesCtrl'
+      }
+    }
+  })
   .state('app.perfil', {
     url: '/perfil',
     views: {

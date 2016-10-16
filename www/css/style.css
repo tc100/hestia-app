@@ -102,3 +102,45 @@
 .lista-restaurantes{
     background-color: #C84C00 !important;
 }
+/* detalhes restaurante*/
+.profile-restaurante{
+  margin-top: 3em;
+}
+.img-restaurante{
+  width: 100%;
+}
+.titulo-restaurante{
+  text-align: center;
+  width: 100%;
+  font-size: 1.5em;
+}
+
+.endereco-restaurante{
+  font-size: 0.8em;
+}
+.icones-restaurante{
+  text-align: center;
+  font-size: 1.3em;
+  position: absolute;
+}
+
+.icones-restaurante i{
+  margin-right: 0.5em;
+}
+.tabs-hestia{
+  margin-top: -0.5em !important;
+  background-color: #C84C00 !important;
+  border: 0 !important;
+}
+.tabs-hestia .tabs{
+  padding: 0 !important;
+}
+
+.tabs-hestia .tab-item{
+  background-color: #C84C00 !important;
+  color: white;
+}
+
+.tab-item-active{
+  margin-bottom: 1px solid #C84C00;
+}

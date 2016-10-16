@@ -1,4 +1,33 @@
-<ion-view view-title="{{restaurante.nomerestaurante}}">
-  <ion-content class="padding">
-  </ion-content>
+<ion-view view-title="estabelecimento">
+    <div class="row profile-restaurante">
+      <div class="col col-33">
+        <img class="img-restaurante" src="img/adam.jpg"></img>
+      </div>
+      <div class="col col-66">
+        <p class="titulo-restaurante">{{restaurante.nomerestaurante}}</p>
+        <p class="endereco-restaurante">{{restaurante.endereco}}</p>
+        <p class="icones-restaurante">
+            <i class="icon ion-ios-star"> {{restaurante.avaliacao}}</i>
+            <i class="icon ion-chatbox"> {{restaurante.comentarios}}</i>
+            <i class="icon ion-location"> {{restaurante.distancia}}</i>
+        </p>
+      </div>
+    </div>
+    <ion-tabs class="tabs tabs-icon-top static tabs-hestia">
+        <ion-tab title="Cardapio" icon-on="ion-ios-book" icon-off="ion-ios-book-outline" ui-sref="app.restauranteDetail.cardapio">
+          <ion-nav-view name="Cardapio">
+          </ion-nav-view>
+        </ion-tab>
+        <ion-tab title="Mapa" icon-on="ion-location" icon-off="ion-location" ui-sref="app.restauranteDetail.mapa">
+          <ion-nav-view name="Mapa">
+          </ion-nav-view>
+        </ion-tab>
+        <ion-tab title="Avaliações" icon-on="ion-ios-star" icon-off="ion-ios-star"ui-sref="app.restauranteDetail.avaliacoes">
+          <ion-nav-view name="Avaliacoes">
+            <ion-content>
+              <h1 style="color: black; z-index:999;">Oieeee</h1>
+            </ion-content>
+          </ion-nav-view>
+        </ion-tab>
+    </ion-tabs>
 </ion-view>
