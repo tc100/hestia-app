@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'firebase', 'ngCordova'])
 .constant('ApiEndpoint', {
-  url: 'http://hestia-api.mybluemix.net/apihestia'
+  url: 'http://localhost:6001/apihestia'
 })
 .value('userRef', {})
 .config(function($ionicConfigProvider) {
@@ -74,7 +74,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   .state('app.restauranteDetail.cardapio', {
     url: '/cardapio',
     views: {
-      'tabsContent': {
+      'Cardapio': {
         templateUrl: 'templates/cardapio.html',
         controller: 'CardapioCtrl'
       }
@@ -83,18 +83,18 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   .state('app.restauranteDetail.mapa', {
     url: '/mapa',
     views: {
-      'tabsContent': {
+      'Mapa': {
         templateUrl: 'templates/mapa.html',
-        controller: 'MapaCtrl'
+        //controller: 'MapaCtrl'
       }
     }
   })
   .state('app.restauranteDetail.avaliacoes', {
     url: '/avaliacoes',
     views: {
-      'tabsContent': {
+      'Avaliacoes': {
         templateUrl: 'templates/avaliacoes.html',
-        controller: 'AvaliacoesCtrl'
+        //controller: 'AvaliacoesCtrl'
       }
     }
   })
@@ -154,6 +154,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('login');
+  $urlRouterProvider.otherwise('/app/restaurantes');
 
 });
