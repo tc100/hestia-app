@@ -173,6 +173,7 @@ angular.module('starter.controllers', [])
   });
   Restaurantes.getCardapio(restaurante,cardapio).then(function successCallback(data){
     $scope.cardapio = data.data;
+    console.log(data.data);
     $ionicLoading.hide();
   });
 
