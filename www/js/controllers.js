@@ -1,38 +1,49 @@
 angular.module('starter.controllers', [])
 
-.controller('RestaurantesCtrl', function($scope, Restaurantes, $ionicLoading, $state) {
+.controller('RestaurantesCtrl', function($scope, Restaurantes, $ionicLoading, $state, $cordovaGeolocation) {
   $scope.restaurantes =[];
   var geocoder = new google.maps.Geocoder();
-  
-  codeAddress()
-  function codeAddress() {
 
-    //In this case it gets the address from an element on the page, but obviously you  could just pass it to the method instead
-    var address = "Rua maria jose ferreira, 181";
+  function calculateDistance(user, local) {
+      var rad = function(x) {
+        return x * Math.PI / 180;
+      };
 
-    geocoder.geocode( { 'address' : address }, function( results, status ) {
-        console.log("JSON: " + JSON.stringify(results));
-        if( status == google.maps.GeocoderStatus.OK ) {
-            //In this case it creates a marker, but you can get the lat and lng from the location.LatLng
-            //map.setCenter( results[0].geometry.location );
-            console.log("chegou::");
+      var R = 6378137;
+      var dLat = rad(local.lat - user.lat);
+      var dLong = rad(local.long - user.long);
+      var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(rad(user.lat)) * Math.cos(rad(local.lat)) *  Math.sin(dLong / 2) * Math.sin(dLong / 2);
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      var d = R * c;
+      if(d > 999){
+        return (Math.round(d)/1000).toFixed(2) + " km";
+      }
+      return d.toFixed(0) + " m";
 
-        } else {
-            alert( 'Geocode was not successful for the following reason: ' + status );
-        }
-    });
-}
+  }
   $ionicLoading.show({
     template: "<ion-spinner icon='spiral'></ion-spinner>"
   });
   Restaurantes.getListaRestaurantes().then(function successCallback(data){
-    for(x in data.data){
-      data.data[x].avaliacao = 0;
-      data.data[x].comentarios = 0;
-      data.data[x].distancia = 0;
-      $scope.restaurantes.push(data.data[x]);
-    }
-    $ionicLoading.hide();
+    var posOptions = {timeout: 5000, enableHighAccuracy: false};
+    var userLocation={};
+    $cordovaGeolocation
+      .getCurrentPosition(posOptions)
+      .then(function (position) {
+        userLocation = {
+          'lat': position.coords.latitude,
+          'long': position.coords.longitude
+        }
+        for(x in data.data){
+          data.data[x].avaliacao = 0;
+          data.data[x].comentarios = 0;
+          data.data[x].distancia = calculateDistance(userLocation,data.data[x].local);
+          $scope.restaurantes.push(data.data[x]);
+        }
+        $ionicLoading.hide();
+      }, function(err) {
+        //TODO: COLOCAR MENSAGEM DE ERRO
+      });
   });
 
   $scope.loadRestaurante = function(restaurante){
