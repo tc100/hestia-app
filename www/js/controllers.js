@@ -2,6 +2,26 @@ angular.module('starter.controllers', [])
 
 .controller('RestaurantesCtrl', function($scope, Restaurantes, $ionicLoading, $state) {
   $scope.restaurantes =[];
+  var geocoder = new google.maps.Geocoder();
+  
+  codeAddress()
+  function codeAddress() {
+
+    //In this case it gets the address from an element on the page, but obviously you  could just pass it to the method instead
+    var address = "Rua maria jose ferreira, 181";
+
+    geocoder.geocode( { 'address' : address }, function( results, status ) {
+        console.log("JSON: " + JSON.stringify(results));
+        if( status == google.maps.GeocoderStatus.OK ) {
+            //In this case it creates a marker, but you can get the lat and lng from the location.LatLng
+            //map.setCenter( results[0].geometry.location );
+            console.log("chegou::");
+
+        } else {
+            alert( 'Geocode was not successful for the following reason: ' + status );
+        }
+    });
+}
   $ionicLoading.show({
     template: "<ion-spinner icon='spiral'></ion-spinner>"
   });
@@ -79,24 +99,30 @@ angular.module('starter.controllers', [])
 
 .controller('LeitorCtrl', function($scope, $state, $cordovaBarcodeScanner, userRef) {
   $scope.user = userRef;
-
-  document.addEventListener("deviceready", function () {
-   $cordovaBarcodeScanner
-     .scan()
-     .then(function(barcodeData) {
-       // Success! Barcode data is here
-       alert("JSON: " + barcodeData.text);
-     }, function(error) {
-       // An error occurred
-     });
- },
-  {
-      "preferFrontCamera" : true, // iOS and Android
-      "showFlipCameraButton" : true, // iOS and Android
-      "prompt" : "Scanneie o QRCode", // supported on Android only
-      "formats" : "QR_CODE" // default: all but PDF_417 and RSS_EXPANDED
-    //  "orientation" : "landscape"  Android only (portrait|landscape), default unset so it rotates with the device
+  $scope.$on('$ionicView.enter', function() {
+    initializateCamera();
   });
+
+  function initializateCamera(){
+    document.addEventListener("deviceready", function () {
+     $cordovaBarcodeScanner
+       .scan()
+       .then(function(barcodeData) {
+         // Success! Barcode data is here
+         alert("JSON: " + barcodeData.text);
+       }, function(error) {
+         // An error occurred
+       });
+   },
+    {
+        "preferFrontCamera" : true, // iOS and Android
+        "showFlipCameraButton" : true, // iOS and Android
+        "prompt" : "Scanneie o QRCode", // supported on Android only
+        "formats" : "QR_CODE" // default: all but PDF_417 and RSS_EXPANDED
+      //  "orientation" : "landscape"  Android only (portrait|landscape), default unset so it rotates with the device
+    });
+  }
+
 })
 
 .controller('MenuCtrl', function($scope, $firebaseAuth, $ionicLoading, Users, $firebaseObject, userRef){
