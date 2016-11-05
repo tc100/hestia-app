@@ -18,9 +18,8 @@
     <script src="https://cdn.firebase.com/libs/angularfire/2.0.2/angularfire.min.js"></script>
     <script src="lib/ngCordova/ng-cordova.min.js"></script>
     <script src="cordova.js"></script>
-    <script type="text/javascript" async defer
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDNME65FX2cRsW_Z_Cq9BrKgKS807vV5nQ&callback=initMap">
-    </script>
+
+    <script src="lib/ionicuirouter/ionicUIRouter.js"></script>
 
 
     <script>
@@ -36,19 +35,64 @@
     </script>
   <!--  <script src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
 -->  </head>
-  <body ng-app="starter">
+  <body ng-app="starter" animation="slide-left-right-ios7">
     <!--
       The nav bar that will be updated as we navigate between views.
     -->
-    <ion-nav-bar class="bar-stable">
-      <ion-nav-back-button>
-      </ion-nav-back-button>
-    </ion-nav-bar>
+    <div>
+      <ion-side-menus enable-menu-with-back-views="false" data-componentid="side-menu">
+        <ion-side-menu-content>
+          <ion-nav-bar class="bar-stable">
+            <ion-nav-back-button></ion-nav-back-button>
+            <ion-nav-buttons side="left">
+              <button class="button button-icon button-clear ion-navicon color-hestia" menu-toggle="left"></button>
+            </ion-nav-buttons>
+          </ion-nav-bar>
+          <ion-nav-view></ion-nav-view>
+        </ion-side-menu-content>
+        <ion-side-menu side="left" id="side-menu">
+          <ion-header-bar class="bar-stable">
+            <div class="title">H E S T I A</div>
+          </ion-header-bar>
+          <ion-content ng-controller="MenuCtrl" padding="false" class= "side-menu-left has-header" data-componentid="menu-list">
+            <ion-list class="list">
+              <ion-item menu-close id = "menu-perfil" ui-sref="perfil" class="item-avatar" data-componentid="list-perfil">
+                <img src="img/profile.jpg" />
+                {{user.nome}} {{user.sobrenome}}
+              </ion-item>
+              <ion-item menu-close id = "menu-restaurantes" ui-sref="restaurantes" class="item-icon-left" data-componentid="list-restaurantes">
+                <i class="icon ion-fork"></i>
+                Restaurantes
+              </ion-item>
+              <ion-item menu-close id = "menu-favoritos" ui-sref="favoritos" class="item-icon-left" data-componentid="list-favoritos">
+                <i class="icon ion-star"></i>
+                Favoritos
+              </ion-item>
+              <ion-item menu-close id = "menu-historico"  ui-sref="browse" class="item-icon-left" data-componentid="list-historico">
+                <i class="icon ion-android-list"></i>
+                Historico
+              </ion-item>
+              <ion-item menu-close id = "menu-pagamento" ui-sref="pagamento" class="item-icon-left" data-componentid="list-pagamento">
+                <i class="icon ion-card"></i>
+                Pagamento
+              </ion-item>
+              <ion-item menu-close id = "menu-leitor" ui-sref="leitor" class="item-icon-left" data-componentid="list-leitor">
+                <i class="icon ion-qr-scanner"></i>
+                Leitor QR Code
+              </ion-item>
+              <ion-item menu-close id = "menu-logout" href="#/logout" class="item-icon-left" ng-click="authObj.$signOut()" data-componentid="list-logout">
+                <i class="icon ion-log-out"></i>
+                Sair
+              </ion-item>
+            </ion-list>
+          </ion-content>
+        </ion-side-menu>
+      </ion-side-menus>
+    </div>
     <!--
       The views will be rendered in the <ion-nav-view> directive below
       Templates are in the /templates folder (but you could also
       have templates inline in this html file if you'd like).
     -->
-    <ion-nav-view></ion-nav-view>
   </body>
 </html>

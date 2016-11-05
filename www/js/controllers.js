@@ -2,7 +2,6 @@ angular.module('starter.controllers', [])
 
 .controller('RestaurantesCtrl', function($scope, Restaurantes, $ionicLoading, $state, $cordovaGeolocation) {
   $scope.restaurantes =[];
-  var geocoder = new google.maps.Geocoder();
 
   function calculateDistance(user, local) {
       var rad = function(x) {
@@ -25,6 +24,8 @@ angular.module('starter.controllers', [])
     template: "<ion-spinner icon='spiral'></ion-spinner>"
   });
   Restaurantes.getListaRestaurantes().then(function successCallback(data){
+
+    console.log("entrei");
     var posOptions = {timeout: 5000, enableHighAccuracy: false};
     var userLocation={};
     $cordovaGeolocation
@@ -47,13 +48,13 @@ angular.module('starter.controllers', [])
   });
 
   $scope.loadRestaurante = function(restaurante){
-    $state.go('app.restauranteDetail',{'restaurante': restaurante});
+    $state.go('tab-rest',{'restaurante': restaurante});
   }
 })
 
 .controller('RestauranteDetailCtrl', function($scope, Restaurantes, $ionicLoading, $stateParams, $state){
   if($stateParams.restaurante == null){
-    $state.go('app.restaurantes');
+    $state.go('restaurantes');
   }else{
     console.log("restaurante: " + JSON.stringify($stateParams.restaurante));
     $scope.restaurante = $stateParams.restaurante;
@@ -86,7 +87,7 @@ angular.module('starter.controllers', [])
   $scope.authObj.$onAuthStateChanged(function(firebaseUser) {
     if (firebaseUser) {
       console.log("Signed in as:", firebaseUser.uid);
-      $state.go("app.restaurantes");
+      $state.go("restaurantes");
     } else {
       console.log("Signed out");
     }
@@ -100,7 +101,7 @@ angular.module('starter.controllers', [])
       .then(function(firebaseUser) {
           console.log("User " + firebaseUser.uid + " created successfully!");
           Users.addNewUser(email, name, lastname, firebaseUser.uid);
-          $state.go('app.restaurantes');
+          $state.go('restaurantes');
       }).catch(function(error) {
           console.error("Error: ", error);
           alert(error);
@@ -159,7 +160,7 @@ angular.module('starter.controllers', [])
 .controller('PerfilCtrl', function($scope, userRef,  $state) {
   $scope.user = userRef;
   $scope.editarCadastro = function(){
-    $state.go('app.perfiledit');
+    $state.go('perfiledit');
   }
 })
 
@@ -167,7 +168,7 @@ angular.module('starter.controllers', [])
   $scope.user = userRef;
   $scope.atualizar = function(user){
     Users.updateUser(user.email, user.nome, user.sobrenome, $scope.user.$id);
-    $state.go('app.perfil');
+    $state.go('perfil');
   }
 })
 
@@ -193,7 +194,7 @@ angular.module('starter.controllers', [])
 .controller('CartaoCtrl', function($scope, $state, Users, userRef) {
   $scope.registrar = function(cartao){
     Users.addCard(cartao.numero, cartao.nome, cartao.mes, cartao.ano, userRef.$id);
-    $state.go('app.perfil');
+    $state.go('perfil');
   }
 })
 

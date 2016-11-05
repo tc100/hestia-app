@@ -1,6 +1,6 @@
 <ion-view view-title="Restaurantes">
-  <ion-content class="lista-restaurantes">
-    <div class="card" ng-repeat="restaurante in restaurantes"  >
+  <ion-content class="lista-restaurantes" padding="true" class="has-header">
+    <div class="card" ng-repeat="restaurante in restaurantes">
       <div class="item item-restaurante" ng-click="loadRestaurante(restaurante)">
         <h2>{{restaurante.nomerestaurante}}<br />
         <sub>{{restaurante.endereco}}</sub></h2>

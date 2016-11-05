@@ -44,34 +44,21 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     templateUrl: 'templates/registrar.html',
     controller: 'RegisterCtrl'
   })
-  .state('app', {
-    url: '/app',
-    abstract: true,
-    templateUrl: 'templates/menu.html',
-    controller: 'MenuCtrl'
-  })
-  .state('app.restaurantes', {
+  .state('restaurantes', {
     url: '/restaurantes',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/tab-restaurantes.html',
-        controller: 'RestaurantesCtrl'
-      }
-    }
+    templateUrl: 'templates/tab-restaurantes.html',
+    controller: 'RestaurantesCtrl'
   })
-  .state('app.restauranteDetail', {
+  .state('tab-rest', {
     url: '/restaurantesDetail',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/restauranteDetail.html',
-        controller: 'RestauranteDetailCtrl'
-      }
-    },
+    templateUrl: 'templates/restauranteDetail.html',
+    controller: 'RestauranteDetailCtrl',
+    abstract: true,
     params: {
       restaurante: null
     }
   })
-  .state('app.restauranteDetail.cardapio', {
+  .state('tab-rest.cardapio', {
     url: '/cardapio',
     views: {
       'Cardapio': {
@@ -80,7 +67,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       }
     }
   })
-  .state('app.restauranteDetail.mapa', {
+  .state('tab-rest.mapa', {
     url: '/mapa',
     views: {
       'Mapa': {
@@ -89,7 +76,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       }
     }
   })
-  .state('app.restauranteDetail.avaliacoes', {
+  .state('tab-rest.avaliacoes', {
     url: '/avaliacoes',
     views: {
       'Avaliacoes': {
@@ -98,62 +85,38 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       }
     }
   })
-  .state('app.perfil', {
+  .state('perfil', {
     url: '/perfil',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/perfil.html',
-        controller: 'PerfilCtrl'
-      }
-    }
+    templateUrl: 'templates/perfil.html',
+    controller: 'PerfilCtrl'
   })
-  .state('app.perfiledit', {
+  .state('perfiledit', {
     url: '/perfiledit',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/perfil-editar.html',
-        controller: 'PerfilEdtCtrl'
-      }
-    }
+    templateUrl: 'templates/perfil-editar.html',
+    controller: 'PerfilEdtCtrl'
   })
-  .state('app.pagamento', {
+  .state('pagamento', {
     url: '/pagamento',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/pagamento.html',
-        controller: 'PagamentoCtrl'
-      }
-    }
+    templateUrl: 'templates/pagamento.html',
+    controller: 'PagamentoCtrl'
   })
-  .state('app.cartao', {
+  .state('cartao', {
     url: '/cartao',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/cartao.html',
-        controller: 'CartaoCtrl'
-      }
-    }
+    templateUrl: 'templates/cartao.html',
+    controller: 'CartaoCtrl'
   })
-  .state('app.leitor', {
+  .state('leitor', {
     url: '/leitor',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/leitor.html',
-        controller: 'LeitorCtrl'
-      }
-    }
+    templateUrl: 'templates/leitor.html',
+    controller: 'LeitorCtrl'
   })
-  .state('app.cardapio', {
+  .state('cardapio', {
     url: '/cardapio',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/cardapio.html',
-        controller: 'CardapioCtrl'
-      }
-    }
+    templateUrl: 'templates/cardapio.html',
+    controller: 'CardapioCtrl'
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/restaurantes');
+  $urlRouterProvider.otherwise('/login');
 
 });
