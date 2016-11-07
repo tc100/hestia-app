@@ -3,8 +3,11 @@ angular.module('starter.services', [])
 .factory('Restaurantes', function($http, ApiEndpoint){
     return {
       getListaRestaurantes: function(){
-        return $http.get(ApiEndpoint.url+"/estabelecimentos").then(function(data){
+        return $http.get(ApiEndpoint.url+"/estabelecimentos").then(function( data){
+          console.log("Data: " + data);
             return data;
+        },function(error){
+            return null;
         })
       },
       getCardapio: function (idRestaurante, cardapio){
