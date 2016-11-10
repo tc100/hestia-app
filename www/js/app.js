@@ -49,15 +49,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     templateUrl: 'templates/tab-restaurantes.html',
     controller: 'RestaurantesCtrl'
   })
-  .state('tab-rest', {
-    url: '/restaurantesDetail',
-    templateUrl: 'templates/restauranteDetail.html',
-    controller: 'RestauranteDetailCtrl',
-    abstract: true,
-    params: {
-      restaurante: null
-    }
-  })
   .state('tab-rest.cardapio', {
     url: '/cardapio',
     views: {
@@ -74,6 +65,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         templateUrl: 'templates/mapa.html',
         //controller: 'MapaCtrl'
       }
+    },
+    params: {
+      restaurante: null
     }
   })
   .state('tab-rest.avaliacoes', {
@@ -84,6 +78,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         //controller: 'AvaliacoesCtrl'
       }
     }
+  })
+  .state('tab-rest', {
+    url: '/restaurantesDetail',
+    templateUrl: 'templates/tabsController.html',
+    controller: 'RestauranteDetailCtrl',
+    abstract: true
   })
   .state('perfil', {
     url: '/perfil',
@@ -117,6 +117,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/login');
+  $urlRouterProvider.otherwise('/restaurantes');
 
 });
