@@ -96,16 +96,29 @@ angular.module('starter.controllers', [])
   }
 })
 
-.controller('RestauranteDetailCtrl', function($scope, Restaurantes, $ionicLoading, $stateParams, $state){
-  
+.controller('RestauranteDetailCtrl', function($scope, $ionicLoading, $stateParams, $state, $cordovaGeolocation){
+
   $scope.$on('$ionicView.enter', function() {
     if($stateParams.restaurante == null){
       $state.go('restaurantes');
     }else{
       $scope.restaurante = $stateParams.restaurante;
+      //Sobre
+      var myLatLng = {lat: Number($scope.restaurante.local.lat), lng: Number($scope.restaurante.local.long)};
+      var map = new google.maps.Map(document.getElementById('map'), {
+        center: myLatLng,
+        zoom: 15,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        disableDefaultUI: true,
+        draggable:false
+      });
+      var marker = new google.maps.Marker({
+          map: map,
+          position: myLatLng
+        });
     }
   });
-  //Sobre
+
 })
 
 .controller('LoginCtrl', function($scope, $state, $firebaseAuth, Users) {

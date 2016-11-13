@@ -110,7 +110,6 @@
   width: 100%;
 }
 .titulo-restaurante{
-  text-align: center;
   width: 100%;
   font-size: 1.5em;
 }
@@ -142,4 +141,10 @@
 
 .tab-item-active{
   margin-bottom: 1px solid #C84C00;
+}
+
+#map {
+    padding: 0.5em;
+    width: 98%;
+    height: 15em;
 }

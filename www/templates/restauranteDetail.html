@@ -15,14 +15,14 @@
     <ion-tabs class="tabs-icon-top tabs-hestia static">
       <!-- TODO: Trocar icone de location para algum de sobre -->
         <ion-tab title="Sobre" icon-on="ion-location" icon-off="ion-location">
-          <ion-content has-header="true" style="top:34%">
+          <ion-content has-header="true" style="top:34%; height: 100%;">
               <h4>Descrição</h4>
               <p>{{restaurante.descricao}}</p>
               <h4>Localização</h4>
-              <p>{{restaurante.endereco}}</p>
+              <p>{{restaurante.endereco}}, {{restaurante.numero}}, {{restaurante.cidade}} - {{restaurante.estado}}</p>
 
               <div id="map" data-tap-disabled="true"></div>
-              
+
           </ion-content>
         </ion-tab>
         <ion-tab title="Cardapio" icon-on="ion-ios-book" icon-off="ion-ios-book-outline">
