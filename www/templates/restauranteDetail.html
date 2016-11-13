@@ -5,7 +5,6 @@
       </div>
       <div class="col col-66">
         <p class="titulo-restaurante">{{restaurante.nomerestaurante}}</p>
-        <p class="endereco-restaurante">{{restaurante.endereco}}</p>
         <p class="icones-restaurante">
             <i class="icon ion-ios-star"> {{restaurante.avaliacao}}</i>
             <i class="icon ion-chatbox"> {{restaurante.comentarios}}</i>
@@ -13,18 +12,28 @@
         </p>
       </div>
     </div>
-    <ion-tabs class="tabs tabs-icon-top tabs-hestia">
-        <ion-tab title="Cardapio" icon-on="ion-ios-book" icon-off="ion-ios-book-outline" href="#/restaurantesDetail/cardapio" id="tabsController-tab1">
-          <ion-nav-view name="Cardapio">
-          </ion-nav-view>
+    <ion-tabs class="tabs-icon-top tabs-hestia static">
+      <!-- TODO: Trocar icone de location para algum de sobre -->
+        <ion-tab title="Sobre" icon-on="ion-location" icon-off="ion-location">
+          <ion-content has-header="true" style="top:34%">
+              <h4>Descrição</h4>
+              <p>{{restaurante.descricao}}</p>
+              <h4>Localização</h4>
+              <p>{{restaurante.endereco}}</p>
+
+              <div id="map" data-tap-disabled="true"></div>
+              
+          </ion-content>
         </ion-tab>
-        <ion-tab title="Mapa" icon-on="ion-location" icon-off="ion-location" href="#/restaurantesDetail/mapa" id="tabsController-tab2">
-          <ion-nav-view name="Mapa">
-          </ion-nav-view>
+        <ion-tab title="Cardapio" icon-on="ion-ios-book" icon-off="ion-ios-book-outline">
+          <ion-content has-header="true" style="top:34%">
+              <h2>Tab 1 Content</h2>
+          </ion-content>
         </ion-tab>
-        <ion-tab title="Avaliações" icon-on="ion-ios-star" icon-off="ion-ios-star"href="#/restaurantesDetail/avaliacoes" id="tabsController-tab3">
-          <ion-nav-view name="Avaliacoes">
-          </ion-nav-view>
+        <ion-tab title="Avaliações" icon-on="ion-ios-star" icon-off="ion-ios-star">
+          <ion-content has-header="true" style="top:34%">
+              <h2>Tab 3 Content</h2>
+          </ion-content>
         </ion-tab>
     </ion-tabs>
 </ion-view>

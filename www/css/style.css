@@ -127,13 +127,12 @@
 .icones-restaurante i{
   margin-right: 0.5em;
 }
-.tabs-hestia{
-  margin-top: -0.5em !important;
+
+.tabs-hestia .tabs{
   background-color: #C84C00 !important;
   border: 0 !important;
-}
-.tabs-hestia .tabs{
-  padding: 0 !important;
+  position: fixed;
+  top:25%;
 }
 
 .tabs-hestia .tab-item{

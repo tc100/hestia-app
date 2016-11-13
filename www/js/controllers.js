@@ -92,17 +92,20 @@ angular.module('starter.controllers', [])
   }
 
   $scope.loadRestaurante = function(restaurante){
-    $state.go('tab-rest.mapa',{'restaurante': restaurante});
+    $state.go('restauranteDetail',{'restaurante': restaurante});
   }
 })
 
 .controller('RestauranteDetailCtrl', function($scope, Restaurantes, $ionicLoading, $stateParams, $state){
-  if($stateParams.restaurante == null){
-    $state.go('restaurantes');
-  }else{
-    console.log("restaurante: " + JSON.stringify($stateParams.restaurante));
-    $scope.restaurante = $stateParams.restaurante;
-  }
+  
+  $scope.$on('$ionicView.enter', function() {
+    if($stateParams.restaurante == null){
+      $state.go('restaurantes');
+    }else{
+      $scope.restaurante = $stateParams.restaurante;
+    }
+  });
+  //Sobre
 })
 
 .controller('LoginCtrl', function($scope, $state, $firebaseAuth, Users) {

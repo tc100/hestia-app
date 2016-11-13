@@ -70,20 +70,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       restaurante: null
     }
   })
-  .state('tab-rest.avaliacoes', {
-    url: '/avaliacoes',
-    views: {
-      'Avaliacoes': {
-        templateUrl: 'templates/avaliacoes.html',
-        //controller: 'AvaliacoesCtrl'
-      }
-    }
-  })
-  .state('tab-rest', {
+  .state('restauranteDetail', {
     url: '/restaurantesDetail',
-    templateUrl: 'templates/tabsController.html',
-    controller: 'RestauranteDetailCtrl',
-    abstract: true
+    templateUrl: 'templates/restauranteDetail.html',
+    controller: "RestauranteDetailCtrl",
+    params: {
+      restaurante: null
+    }
   })
   .state('perfil', {
     url: '/perfil',
