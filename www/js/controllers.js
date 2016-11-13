@@ -1,63 +1,124 @@
 angular.module('starter.controllers', [])
 
-.controller('RestaurantesCtrl', function($scope, Restaurantes, $ionicLoading, $state, $cordovaGeolocation) {
+.controller('RestaurantesCtrl', function($scope, Restaurantes, $ionicLoading, $state, $cordovaGeolocation, $ionicPopup, userRef) {
+  $scope.$on('$ionicView.enter', function() {
+    if(typeof userRef.lista != null){
+      var difference = new Date().getTime() - 600000;
+      if(difference > userRef.lista){
+        getRestaurantes();
+      }
+    }else{
+      getRestaurantes();
+    }
+  });
   $scope.restaurantes =[];
-  var geocoder = new google.maps.Geocoder();
-
+  getRestaurantes();
   function calculateDistance(user, local) {
-      var rad = function(x) {
-        return x * Math.PI / 180;
-      };
-
+      var rad = function(x) { return x * Math.PI / 180;};
       var R = 6378137;
       var dLat = rad(local.lat - user.lat);
       var dLong = rad(local.long - user.long);
       var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(rad(user.lat)) * Math.cos(rad(local.lat)) *  Math.sin(dLong / 2) * Math.sin(dLong / 2);
       var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
       var d = R * c;
-      if(d > 999){
-        return (Math.round(d)/1000).toFixed(2) + " km";
-      }
+      if(d > 999){return (Math.round(d)/1000).toFixed(2) + " km";}
       return d.toFixed(0) + " m";
-
   }
   $ionicLoading.show({
     template: "<ion-spinner icon='spiral'></ion-spinner>"
   });
-  Restaurantes.getListaRestaurantes().then(function successCallback(data){
-    var posOptions = {timeout: 5000, enableHighAccuracy: false};
-    var userLocation={};
-    $cordovaGeolocation
-      .getCurrentPosition(posOptions)
-      .then(function (position) {
-        userLocation = {
-          'lat': position.coords.latitude,
-          'long': position.coords.longitude
-        }
-        for(x in data.data){
-          data.data[x].avaliacao = 0;
-          data.data[x].comentarios = 0;
-          data.data[x].distancia = calculateDistance(userLocation,data.data[x].local);
-          $scope.restaurantes.push(data.data[x]);
-        }
+
+
+  function getRestaurantes(){
+    userRef["lista"] = new Date().getTime();
+    console.log("lista: " + userRef.lista);//600000
+    Restaurantes.getListaRestaurantes().then(function successCallback(data){
+      if(data != null){
+        $scope.restaurantes =[];
+        var posOptions = {timeout: 5000, enableHighAccuracy: false};
+        var userLocation={};
+        $cordovaGeolocation
+          .getCurrentPosition(posOptions)
+          .then(function (position) {
+            userLocation = {
+              'lat': position.coords.latitude,
+              'long': position.coords.longitude
+            }
+            for(x in data.data){
+              data.data[x].avaliacao = 0;
+              data.data[x].comentarios = 0;
+              data.data[x].distancia = calculateDistance(userLocation,data.data[x].local);
+              $scope.restaurantes.push(data.data[x]);
+            }
+            $ionicLoading.hide();
+          }, function(err) {
+            console.error("error geolocation ");
+            //TODO: trocar a cor dos botoes do popup
+            for(x in data.data){
+              data.data[x].avaliacao = 0;
+              data.data[x].comentarios = 0;
+              data.data[x].distancia = 0;
+              $scope.restaurantes.push(data.data[x]);
+            }
+            if(err.code == 1){
+              $scope.showAlert = function() {
+               var alertPopup = $ionicPopup.alert({
+                 template: 'É necessário permitir que Hestia acesse sua localização em ajustes.'
+               });
+             };
+             $scope.showAlert();
+           }else{
+             $scope.showAlert = function() {
+              var alertPopup = $ionicPopup.alert({
+                template: 'Ocorreu um error. Por favor, tente mais tarde.'
+              });
+            };
+            $scope.showAlert();
+          }
+          $ionicLoading.hide();
+         });
+       }else{
+         console.error("error service restaurante");
+         $scope.showAlert = function() {
+          var alertPopup = $ionicPopup.alert({
+            template: 'Ocorreu um error. Por favor, tente mais tarde.'
+          });
+        };
+        $scope.showAlert();
         $ionicLoading.hide();
-      }, function(err) {
-        //TODO: COLOCAR MENSAGEM DE ERRO
-      });
-  });
+
+       }
+    });
+  }
 
   $scope.loadRestaurante = function(restaurante){
-    $state.go('app.restauranteDetail',{'restaurante': restaurante});
+    $state.go('restauranteDetail',{'restaurante': restaurante});
   }
 })
 
-.controller('RestauranteDetailCtrl', function($scope, Restaurantes, $ionicLoading, $stateParams, $state){
-  if($stateParams.restaurante == null){
-    $state.go('app.restaurantes');
-  }else{
-    console.log("restaurante: " + JSON.stringify($stateParams.restaurante));
-    $scope.restaurante = $stateParams.restaurante;
-  }
+.controller('RestauranteDetailCtrl', function($scope, $ionicLoading, $stateParams, $state, $cordovaGeolocation){
+
+  $scope.$on('$ionicView.enter', function() {
+    if($stateParams.restaurante == null){
+      $state.go('restaurantes');
+    }else{
+      $scope.restaurante = $stateParams.restaurante;
+      //Sobre
+      var myLatLng = {lat: Number($scope.restaurante.local.lat), lng: Number($scope.restaurante.local.long)};
+      var map = new google.maps.Map(document.getElementById('map'), {
+        center: myLatLng,
+        zoom: 15,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        disableDefaultUI: true,
+        draggable:false
+      });
+      var marker = new google.maps.Marker({
+          map: map,
+          position: myLatLng
+        });
+    }
+  });
+
 })
 
 .controller('LoginCtrl', function($scope, $state, $firebaseAuth, Users) {
@@ -86,7 +147,7 @@ angular.module('starter.controllers', [])
   $scope.authObj.$onAuthStateChanged(function(firebaseUser) {
     if (firebaseUser) {
       console.log("Signed in as:", firebaseUser.uid);
-      $state.go("app.restaurantes");
+      $state.go("restaurantes");
     } else {
       console.log("Signed out");
     }
@@ -100,7 +161,7 @@ angular.module('starter.controllers', [])
       .then(function(firebaseUser) {
           console.log("User " + firebaseUser.uid + " created successfully!");
           Users.addNewUser(email, name, lastname, firebaseUser.uid);
-          $state.go('app.restaurantes');
+          $state.go('restaurantes');
       }).catch(function(error) {
           console.error("Error: ", error);
           alert(error);
@@ -159,7 +220,7 @@ angular.module('starter.controllers', [])
 .controller('PerfilCtrl', function($scope, userRef,  $state) {
   $scope.user = userRef;
   $scope.editarCadastro = function(){
-    $state.go('app.perfiledit');
+    $state.go('perfiledit');
   }
 })
 
@@ -167,7 +228,7 @@ angular.module('starter.controllers', [])
   $scope.user = userRef;
   $scope.atualizar = function(user){
     Users.updateUser(user.email, user.nome, user.sobrenome, $scope.user.$id);
-    $state.go('app.perfil');
+    $state.go('perfil');
   }
 })
 
@@ -182,9 +243,13 @@ angular.module('starter.controllers', [])
   $ionicLoading.show({
     template: "<ion-spinner icon='spiral'></ion-spinner>"
   });
-  Restaurantes.getCardapio(restaurante,cardapio).then(function successCallback(data){
+  Restaurantes.getCardapio(restaurante,cardapio).then(function(error,data){
+    if(error){
+      console.log("error: " + error);
+      $ionicLoading.hide();
+      alert("Falha ao carregar. Tente novamente mais tarde !");
+    }
     $scope.cardapio = data.data;
-    console.log(data.data);
     $ionicLoading.hide();
   });
 
@@ -193,7 +258,7 @@ angular.module('starter.controllers', [])
 .controller('CartaoCtrl', function($scope, $state, Users, userRef) {
   $scope.registrar = function(cartao){
     Users.addCard(cartao.numero, cartao.nome, cartao.mes, cartao.ano, userRef.$id);
-    $state.go('app.perfil');
+    $state.go('perfil');
   }
 })
 
