@@ -31,7 +31,6 @@ angular.module('starter.controllers', [])
 
   function getRestaurantes(){
     userRef["lista"] = new Date().getTime();
-    console.log("lista: " + userRef.lista);//600000
     Restaurantes.getListaRestaurantes().then(function successCallback(data){
       if(data != null){
         $scope.restaurantes =[];
@@ -90,13 +89,12 @@ angular.module('starter.controllers', [])
        }
     });
   }
-
   $scope.loadRestaurante = function(restaurante){
     $state.go('restauranteDetail',{'restaurante': restaurante});
   }
 })
 
-.controller('RestauranteDetailCtrl', function($scope, $ionicLoading, $stateParams, $state, $cordovaGeolocation){
+.controller('RestauranteDetailCtrl', function($scope, $ionicLoading, $stateParams, $state, $cordovaGeolocation, $ionicLoading){
 
   $scope.$on('$ionicView.enter', function() {
     if($stateParams.restaurante == null){
@@ -113,12 +111,19 @@ angular.module('starter.controllers', [])
         draggable:false
       });
       var marker = new google.maps.Marker({
-          map: map,
-          position: myLatLng
-        });
+        map: map,
+        position: myLatLng
+      });
+      //Fim sobre
+      //Cardapio
+      //TODO: Trocar para escolher cardapio do dia e hora
+      $scope.cardapio = $scope.restaurante.cardapios[0];
+      //fim cardapio
+      //Avaliacoes
+      $scope.avaliacoes = 0;
+      //Fim Avaliacoes
     }
   });
-
 })
 
 .controller('LoginCtrl', function($scope, $state, $firebaseAuth, Users) {
@@ -260,8 +265,4 @@ angular.module('starter.controllers', [])
     Users.addCard(cartao.numero, cartao.nome, cartao.mes, cartao.ano, userRef.$id);
     $state.go('perfil');
   }
-})
-
-.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
-  $scope.chat = Chats.get($stateParams.chatId);
 });

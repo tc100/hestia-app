@@ -26,13 +26,58 @@
           </ion-content>
         </ion-tab>
         <ion-tab title="Cardapio" icon-on="ion-ios-book" icon-off="ion-ios-book-outline">
-          <ion-content has-header="true" style="top:34%">
-              <h2>Tab 1 Content</h2>
+          <ion-content has-header="true" style="top:34%; height: 100%;">
+            <ion-list>
+              <div ng-repeat="categoria in cardapio.categorias">
+                <div class="item-divider"type="item-text-wrap" >
+                  {{categoria.nome}}
+                </div>
+                <div ng-repeat="prato in categoria.pratos">
+                  <ion-item class="item-remove-animate item-icon-right" type="item-text-wrap" >
+                    <label>{{prato.nome}}</label>
+                    <label class = "pull-right">R$ {{prato.preco}}</label>
+                    <i class="icon ion-chevron-right icon-accessory"></i>
+                  </ion-item>
+                </div>
+              </div>
+            </ion-list>
           </ion-content>
         </ion-tab>
         <ion-tab title="Avaliações" icon-on="ion-ios-star" icon-off="ion-ios-star">
-          <ion-content has-header="true" style="top:34%">
-              <h2>Tab 3 Content</h2>
+          <ion-content has-header="true" style="top:34%; height: 100%;">
+            <div class="row">
+                <div class="col col-33" style="text-align: right">
+                  Geral:
+                </div>
+                <div class="col col-66" style="text-align: left">
+                  <i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-33" style="text-align: right">
+                  Comida:
+                </div>
+                <div class="col col-66" style="text-align: left">
+                  <i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-33" style="text-align: right">
+                  Atendimento:
+                </div>
+                <div class="col col-66" style="text-align: left">
+                  <i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-33" style="text-align: right">
+                  Limpeza:
+                </div>
+                <div class="col col-66" style="text-align: left">
+                  <i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i>
+                </div>
+            </div>
+            </div>
           </ion-content>
         </ion-tab>
     </ion-tabs>
