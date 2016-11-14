@@ -55,33 +55,33 @@
           <ion-header-bar class="bar-stable">
             <div class="title">H E S T I A</div>
           </ion-header-bar>
-          <ion-content ng-controller="MenuCtrl" padding="false" class= "side-menu-left has-header" data-componentid="menu-list">
+          <ion-content ng-controller="MenuCtrl" padding="false" class="side-menu-left has-header" data-componentid="menu-list">
             <ion-list class="list">
-              <ion-item menu-close id = "menu-perfil" ui-sref="perfil" class="item-avatar" data-componentid="list-perfil">
-                <img src="img/profile.jpg" />
+              <ion-item menu-close="" id="menu-perfil" ui-sref="perfil" class="item-avatar" data-componentid="list-perfil">
+                <img src="img/profile.jpg">
                 {{user.nome}} {{user.sobrenome}}
               </ion-item>
-              <ion-item menu-close id = "menu-restaurantes" ui-sref="restaurantes" class="item-icon-left" data-componentid="list-restaurantes">
+              <ion-item menu-close="" id="menu-restaurantes" ui-sref="restaurantes" class="item-icon-left" data-componentid="list-restaurantes">
                 <i class="icon ion-fork"></i>
                 Restaurantes
               </ion-item>
-              <ion-item menu-close id = "menu-favoritos" ui-sref="favoritos" class="item-icon-left" data-componentid="list-favoritos">
+              <ion-item menu-close="" id="menu-favoritos" ui-sref="favoritos" class="item-icon-left" data-componentid="list-favoritos">
                 <i class="icon ion-star"></i>
                 Favoritos
               </ion-item>
-              <ion-item menu-close id = "menu-historico"  ui-sref="browse" class="item-icon-left" data-componentid="list-historico">
+              <ion-item menu-close="" id="menu-historico" ui-sref="browse" class="item-icon-left" data-componentid="list-historico">
                 <i class="icon ion-android-list"></i>
                 Historico
               </ion-item>
-              <ion-item menu-close id = "menu-pagamento" ui-sref="pagamento" class="item-icon-left" data-componentid="list-pagamento">
+              <ion-item menu-close="" id="menu-pagamento" ui-sref="pagamento" class="item-icon-left" data-componentid="list-pagamento">
                 <i class="icon ion-card"></i>
                 Pagamento
               </ion-item>
-              <ion-item menu-close id = "menu-leitor" ui-sref="leitor" class="item-icon-left" data-componentid="list-leitor">
+              <ion-item menu-close="" id="menu-leitor" ui-sref="leitor" class="item-icon-left" data-componentid="list-leitor">
                 <i class="icon ion-qr-scanner"></i>
-                Leitor QR Code
+                Pedidos
               </ion-item>
-              <ion-item menu-close id = "menu-logout" href="#/logout" class="item-icon-left" ng-click="authObj.$signOut()" data-componentid="list-logout">
+              <ion-item menu-close="" id="menu-logout" href="#/logout" class="item-icon-left" ng-click="authObj.$signOut()" data-componentid="list-logout">
                 <i class="icon ion-log-out"></i>
                 Sair
               </ion-item>
@@ -90,10 +90,5 @@
         </ion-side-menu>
       </ion-side-menus>
     </div>
-    <!--
-      The views will be rendered in the <ion-nav-view> directive below
-      Templates are in the /templates folder (but you could also
-      have templates inline in this html file if you'd like).
-    -->
   </body>
 </html>

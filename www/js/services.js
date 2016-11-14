@@ -10,10 +10,11 @@ angular.module('starter.services', [])
             return null;
         })
       },
-      getCardapio: function (idRestaurante, cardapio){
-        return $http.get(ApiEndpoint.url+'/cardapio?restaurante='+idRestaurante+'&cardapio='+cardapio)
+      getCardapios: function (idRestaurante){
+        return $http.get(ApiEndpoint.url+'/cardapios?restaurante='+idRestaurante)
         .then(function(data){
-            return data;
+          console.log("data: " + JSON.stringify(data));
+            return data.data;
         })
       }
     }

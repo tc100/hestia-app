@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'firebase', 'ngCordova'])
 .constant('ApiEndpoint', {
-  url: 'http://localhost:6001/apihestia'
+  url: 'https://hestia-api2.mybluemix.net/apihestia'
 })
 .value('userRef', {})
 .config(function($ionicConfigProvider) {

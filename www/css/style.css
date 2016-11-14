@@ -148,3 +148,34 @@
     width: 98%;
     height: 15em;
 }
+
+/*cardapio*/
+.btnQrCode{
+  border: none !important;
+  box-shadow: none !important;
+  font-size: 1em !important;
+}
+
+.pratos-cardapio{
+  padding: 5px 0 5px 5px !important;
+}
+
+
+.total-cardapio label{
+  font-weight: bolder !important;
+}
+.detalhe-conta{
+  width: 100%;
+  height: 80% !important;
+}
+.detalhe-conta ion-scroll{
+  height: 88% !important;
+}
+.detalhe-conta .scroll{
+  height: 100% !important;
+}
+
+.total-cardapio{
+  border: 1px solid black !important;
+  margin-right: 10px !important;
+}

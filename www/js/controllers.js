@@ -174,31 +174,80 @@ angular.module('starter.controllers', [])
   }
 })
 
-.controller('LeitorCtrl', function($scope, $state, $cordovaBarcodeScanner, userRef) {
+.controller('LeitorCtrl', function($scope, $state, $cordovaBarcodeScanner, userRef, Restaurantes, $ionicLoading) {
   $scope.user = userRef;
+  $scope.cardapio = null;
   $scope.$on('$ionicView.enter', function() {
-    initializateCamera();
+    if($scope.cardapio == null){
+      $scope.readQRCode();
+    }
+    Restaurantes.getCardapios("58124c9f2eb1451704739b46").then(function(data){
+      //TODO: Trocar para cardapio de dia e hora corretos
+      $scope.cardapio = data[0];
+      $ionicLoading.hide();
+    })
   });
+  $scope.readQRCode = function(){
+      document.addEventListener("deviceready", function () {
+       $cordovaBarcodeScanner
+         .scan()
+         .then(function(barcodeData) {
+           // Success! Barcode data is here
 
-  function initializateCamera(){
-    document.addEventListener("deviceready", function () {
-     $cordovaBarcodeScanner
-       .scan()
-       .then(function(barcodeData) {
-         // Success! Barcode data is here
-         alert("JSON: " + barcodeData.text);
-       }, function(error) {
-         // An error occurred
-       });
-   },
-    {
-        "preferFrontCamera" : true, // iOS and Android
-        "showFlipCameraButton" : true, // iOS and Android
-        "prompt" : "Scanneie o QRCode", // supported on Android only
-        "formats" : "QR_CODE" // default: all but PDF_417 and RSS_EXPANDED
-      //  "orientation" : "landscape"  Android only (portrait|landscape), default unset so it rotates with the device
-    });
+           $ionicLoading.show({
+             template: "<ion-spinner icon='spiral'></ion-spinner>"
+           });
+           var resultado = JSON.parse(barcodeData.text);
+           Restaurantes.getCardapios(resultado.id).then(function(data){
+             //TODO: Trocar para cardapio de dia e hora corretos
+             $scope.cardapio = data[0];
+             $ionicLoading.hide();
+           })
+         }, function(error) {
+           // An error occurred
+           Document.getElementById("alert").text("Escaneie o QRCode da Mesa");
+         });
+     },
+      {
+          "preferFrontCamera" : true,
+          "showFlipCameraButton" : true,
+          "prompt" : "Scanneie o QRCode",
+          "formats" : "QR_CODE"
+      });
   }
+  //TODO: Fazer metodos para adicionar pratos e categorias novos e deixar essa scope dinamica
+  $scope.conta = {
+    "categorias": [
+      {
+        "nome": "Teste",
+        "pratos": [
+          {
+            "nome": "feijao",
+            "preco": "10.90",
+            "quantidade": 2
+          },
+          {
+            "nome": "arroz",
+            "preco": "2.30",
+            "quantidade": 4
+          }
+        ]
+      }
+    ]
+  }
+  function calculateTotal(conta){
+    conta.total = 0.0;
+    for(x in conta.categorias){
+      for(y in conta.categorias[x].pratos){
+        conta.total = conta.total + ( parseFloat(conta.categorias[x].pratos[y].preco) * conta.categorias[x].pratos[y].quantidade);
+      }
+    }
+    conta.total = parseFloat(0.0 + conta.total).toFixed(2);
+    return conta;
+  }
+  $scope.conta = calculateTotal($scope.conta);
+
+
 
 })
 
