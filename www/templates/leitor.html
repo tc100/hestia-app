@@ -7,8 +7,8 @@
     <!-- TODO: Trocar icone de location para algum de sobre -->
     <ion-tab title="Cardapio" icon-on="ion-ios-book" icon-off="ion-ios-book-outline">
       <ion-content has-header="true" style="top: 8%;height: 100%;">
-        <div ng-repeat="categoria in cardapio.categorias">
-          <div class="item-divider"type="item-text-wrap" >
+    <!--    <div ng-repeat="categoria in cardapio.categorias">
+          <div class="item-header" type="item-text-wrap" >
             {{categoria.nome}}
           </div>
           <div ng-repeat="prato in categoria.pratos">
@@ -18,8 +18,26 @@
               <i class="icon ion-chevron-right icon-accessory"></i>
             </ion-item>
           </div>
-        </div>
-      </ion-tab>
+        </div>-->
+
+        <ion-list>
+          <div ng-repeat="categoria in cardapio.categorias">
+            <ion-item class="item-stable" ng-click="toggleGroup(categoria)" ng-class="{active: isGroupShown(categoria)}">
+                <i class="icon" ng-class="isGroupShown(categoria) ? 'ion-minus' : 'ion-plus'"></i>
+                &nbsp;
+                {{categoria.nome}}
+            </ion-item>
+            <ion-item class="item-accordion" ng-repeat="prato in categoria.pratos" ng-show="isGroupShown(categoria)">
+              {{prato.nome}} - R$ {{prato.preco}}
+              <button class="icon ion-plus pull-right" ng-click="prato['quantidade'] = prato['quantidade']+1; prepareAddPrato(categoria.nome, prato)"></button>
+              <span class="pull-right">{{prato.quantidade == null ? 0 : prato.quantidade }}</span>
+              <button class="icon ion-minus pull-right" ng-click="(prato['quantidade']-1 >= 0) ? (prato['quantidade'] != null ? prato['quantidade'] = prato['quantidade']-1 : prato['quantidade'] = 0) : prato['quantidade'] = 0 ;prepareRmvPrato(categoria.nome, prato)"></button>
+            </ion-item>
+          </div>
+        </ion-list>
+
+      </ion-content>
+    </ion-tab>
     <ion-tab title="Conta" icon-on="ion-location" icon-off="ion-location">
       <ion-content has-header="true" style="top: 8%;height: 100%;" class="detalhe-conta" scroll="false">
         <ion-scroll direction="y">

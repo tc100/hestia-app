@@ -182,7 +182,7 @@ angular.module('starter.controllers', [])
       $scope.readQRCode();
     }
     Restaurantes.getCardapios("58124c9f2eb1451704739b46").then(function(data){
-      //TODO: Trocar para cardapio de dia e hora corretos
+      //TODO: TIRAR ESSA PARTE COLOCAR ALERTA
       $scope.cardapio = data[0];
       $ionicLoading.hide();
     })
@@ -215,26 +215,59 @@ angular.module('starter.controllers', [])
           "formats" : "QR_CODE"
       });
   }
+
+  //adicionar pratos
+  $scope.prepareAddPrato = function(categoria, prato){
+    //TODO: popup para escolher categorias e adicionar elas
+    $scope.addPrato(categoria,prato);
+  }
+  $scope.prepareRmvPrato = function(categoria,prato){
+    console.log("prato: " + JSON.stringify(prato));
+    //TODO: Verificar se soh tem um, se for mais de 1 abrir popup para selecionar qual acompanhamento tirar; removePrato;
+  }
+
+  $scope.addPrato = function(categoria,prato){
+    var foundCategoria = false;
+    for(x in $scope.conta.categorias){
+      if($scope.conta.categorias[x].nome == categoria){
+        for(y in $scope.conta.categorias[x].pratos){
+          if($scope.conta.categorias[x].pratos[y].nome == prato.nome){
+            $scope.conta.categorias[x].pratos[y].quantidade = $scope.conta.categorias[x].pratos[y].quantidade++;
+            for(z in prato.acompanhamentos){
+              $scope.conta.categorias[x].pratos[y].acompanhamentos.push(prato.acompanhamentos[z]);
+            }
+          }
+        }
+        foundCategoria = true;
+        break;
+      }
+    }
+    if(!foundCategoria){
+      var categoria= {
+        "nome": categoria,
+        "pratos": []
+      };
+      categoria.pratos.push(prato);
+      $scope.conta.categorias.push(categoria);
+    }
+    $scope.conta = calculateTotal($scope.conta);
+  }
+
+   /*
+      Metodos para mostrar e ocultar pratos
+    */
+   $scope.toggleGroup = function(cardapio) {
+     cardapio["show"] = !cardapio["show"];
+   };
+   $scope.isGroupShown = function(cardapio) {
+     return cardapio["show"];
+   };
+
   //TODO: Fazer metodos para adicionar pratos e categorias novos e deixar essa scope dinamica
   $scope.conta = {
-    "categorias": [
-      {
-        "nome": "Teste",
-        "pratos": [
-          {
-            "nome": "feijao",
-            "preco": "10.90",
-            "quantidade": 2
-          },
-          {
-            "nome": "arroz",
-            "preco": "2.30",
-            "quantidade": 4
-          }
-        ]
-      }
-    ]
-  }
+    "categorias": []
+  };
+
   function calculateTotal(conta){
     conta.total = 0.0;
     for(x in conta.categorias){
