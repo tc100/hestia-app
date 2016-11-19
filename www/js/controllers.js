@@ -188,7 +188,7 @@ angular.module('starter.controllers', [])
     if($scope.cardapio == null){
       $scope.readQRCode();
     }
-    Restaurantes.getCardapios("58124c9f2eb1451704739b46").then(function(data){
+    Restaurantes.getCardapios("582f972278751e9c2342be83").then(function(data){
       //TODO: TIRAR ESSA PARTE COLOCAR ALERTA
       $scope.cardapio = data[0];
       $ionicLoading.hide();
@@ -203,14 +203,19 @@ angular.module('starter.controllers', [])
              template: "<ion-spinner icon='spiral'></ion-spinner>"
            });
            var resultado = JSON.parse(barcodeData.text);
-           Restaurantes.getCardapios(resultado.id).then(function(data){
-             //TODO: Trocar para cardapio de dia e hora corretos
-             $scope.cardapio = data[0];
+           if(typeof resultado.id != "undefined"){
+             Restaurantes.getCardapios(resultado.id).then(function(data){
+               //TODO: Trocar para cardapio de dia e hora corretos
+               $scope.cardapio = data[0];
+               $ionicLoading.hide();
+             })
+           }else{
              $ionicLoading.hide();
-           })
+             $scope.alertText = "Escaneie o QRCode da Mesa";
+           }
          }, function(error) {
            $ionicLoading.hide();
-           $scope.alertText = "Escaneie o QRCode da Mesa: " + JSON.stringify(error);
+           $scope.alertText = "Erro ao scannear: " + JSON.stringify(error);
          });
      },
       {
@@ -225,6 +230,7 @@ angular.module('starter.controllers', [])
   $scope.prepareAddPrato = function(categoria, prato){
     $scope.quantidadeAcompanhamento = 0;
     $scope.acompanhamentos = [];
+    $scope.numeroDeAcompanhamentos = prato.numeroDeAcompanhamentos;
     $scope.botaoText = "Não quero Acompanhamentos";
     var textModal = '<ion-modal-view>' +
                       '<ion-header-bar>' +
@@ -232,15 +238,19 @@ angular.module('starter.controllers', [])
                       '</ion-header-bar>' +
                       '<ion-content class="teste">' +
                       //TODO: ADD DIVIDER COM numeroDeAcompanhamentos incluidos
-                      '<ion-list>';
+                      '<ion-list>'+
+                      '<div class="item-divider" type="item-text-wrap" style="text-align:center;" >' +
+                        "Acompanhamentos incluídos: {{numeroDeAcompanhamentos}}" +
+                      '</div>';
     for(x in prato.acompanhamentos){
       textModal = textModal + '<ion-item item="item">' +
                                 '<label class="checkbox">' +
                                   '<input type="checkbox" ng-model="acompanhamento'+x+'" ng-true-value="'+x+'" ng-false-value=null ng-change="checkAcompanhamento(acompanhamento'+x+')">' +
                                 '</label>' +
                                 //TODO: Trocar para aparecer nome e preco com a atualizacao da API e WEB
-                                prato.acompanhamentos[x]  +
-                              '</ion-item>';
+                                prato.acompanhamentos[x].nome  +
+                                '<span class="pull-right" ng-show="numeroDeAcompanhamentos==0 ? true : false">' + prato.acompanhamentos[x].preco +
+                              '</span></ion-item>';
     }
     textModal = textModal+ '</ion-list>' +
                       '</ion-content>' +
@@ -258,7 +268,7 @@ angular.module('starter.controllers', [])
             //retirando da variavel de acompanhamentos
             for(x in $scope.acompanhamentos){
               //TODO: TROCAR PARA NOME
-              if($scope.acompanhamentos[x].nome == prato.acompanhamentos[x]){
+              if($scope.acompanhamentos[x].nome == prato.acompanhamentos[x].nome){
                 $scope.acompanhamentos.splice(x,1);
               }
             }
@@ -268,10 +278,14 @@ angular.module('starter.controllers', [])
           $scope.quantidadeAcompanhamento = 0;
       }else{
         //adiciona no array de acompanhamentos
-        $scope.acompanhamentos.push({
-          //TODO: add preco aqui
-          "nome": prato.acompanhamentos[check]
-        });
+        if($scope.acompanhamentos.length != 0)
+          $scope.acompanhamentos.push(prato.acompanhamentos[check]);
+        else{
+          $scope.acompanhamentos.push({
+            "nome": prato.acompanhamentos[check].nome,
+            "preco": "0.00"
+          });
+        }
         $scope.quantidadeAcompanhamento++;
       }
       if($scope.quantidadeAcompanhamento != 0){
@@ -279,6 +293,8 @@ angular.module('starter.controllers', [])
       }else{
         $scope.botaoText = "Não quero Acompanhamentos";
       }
+      var diferenca = prato.numeroDeAcompanhamentos - $scope.quantidadeAcompanhamento;
+      $scope.numeroDeAcompanhamentos = (diferenca >= 0 ) ? diferenca : 0;
     }
 
     $scope.savePrato = function(){
@@ -318,7 +334,6 @@ angular.module('starter.controllers', [])
                                   '<ion-list >';
                 for(z in $scope.conta.categorias[x].pratos[y].acompanhamentos){
                   textModal = textModal + '<ion-radio ng-model="acompanhamento" ng-value='+z+'>' + $scope.conta.categorias[x].pratos[y].acompanhamentos[z].nome +'</ion-radio>' ;
-                                            //TODO: Trocar para aparecer nome e preco com a atualizacao da API e WEB
                 }
                 textModal = textModal+ '</ion-list>' +
                                     '</ion-content>' +
@@ -401,11 +416,13 @@ angular.module('starter.controllers', [])
 
 
   function calculateTotal(conta){
-    //TODO: Adicionar na conta preco dos acompanhamentos
     conta.total = 0.0;
     for(x in conta.categorias){
       for(y in conta.categorias[x].pratos){
         conta.total = conta.total + ( parseFloat(conta.categorias[x].pratos[y].preco) * conta.categorias[x].pratos[y].quantidade);
+        for(z in conta.categorias[x].pratos[y].acompanhamentos){
+          conta.total = conta.total + parseFloat(conta.categorias[x].pratos[y].acompanhamentos[z].preco);
+        }
       }
     }
     conta.total = parseFloat(0.0 + conta.total).toFixed(2);
