@@ -17,26 +17,54 @@
             </ion-item>
             <ion-item class="item-accordion" ng-repeat="prato in categoria.pratos" ng-show="isGroupShown(categoria)">
               {{prato.nome}} - R$ {{prato.preco}}
-              <button class="icon ion-plus pull-right" ng-click="prato['quantidade'] = prato['quantidade']+1; prepareAddPrato(categoria.nome, prato)"></button>
-              <span class="pull-right">{{prato.quantidade == null ? 0 : prato.quantidade }}</span>
-              <button class="icon ion-minus pull-right" ng-click="(prato['quantidade']-1 >= 0) ? (prato['quantidade'] != null ? prato['quantidade'] = prato['quantidade']-1 : prato['quantidade'] = 0) : prato['quantidade'] = 0; prepareRmvPrato(categoria.nome, prato)"></button>
+              <button class="icon ion-plus pull-right" ng-click="prepareAddPrato(categoria.nome, prato)"></button>
             </ion-item>
           </div>
         </ion-list>
 
       </ion-content>
     </ion-tab>
-    <ion-tab title="Conta" icon-on="ion-location" icon-off="ion-location">
+    <ion-tab title="Pedido" icon-on="ion-location" icon-off="ion-location">
+      <ion-content has-header="true" style="top: 8%;height: 100%;" class="detalhe-conta" scroll="false">
+        <ion-scroll direction="y">
+          <div ng-repeat="cont in pedido.categorias">
+            <div class="item-divider"type="item-text-wrap" >
+              {{cont.nome}}
+            </div>
+            <div ng-repeat="prato in cont.pratos track by $index">
+              <ion-item class="item-remove-animate item-icon-right pratos-cardapio" type="item-text-wrap" >
+                <label>{{prato.nome}}</label>
+                <button class="pull-right" ng-click="prepareRmvPrato(cont.nome,prato)"><i class="ion-close-circled "></i></button>
+                <label class = "pull-right">R$ {{prato.preco}}</label>
+
+              </ion-item>
+              <ion-item class="item-remove-animate item-icon-right pratos-cardapio" type="item-text-wrap" ng-repeat="acompanhamento in prato.acompanhamentos">
+                <label style="padding-left:1em;">{{acompanhamento.nome}}</label>
+                <label class = "pull-right">R$ {{acompanhamento.preco}}</label>
+              </ion-item>
+            </div>
+          </div>
+          <div class="item-divider" type="item-text-wrap" ng-if="pedido.total != 0">
+            Total: R$ {{pedido.total}}
+          </div>
+          <p ng-if="pedido.total == 0">Vá na aba Cardapio e adicione algo para fazer o pedido</p>
+        </ion-scroll>
+        <button class="button button-full total-cardapio" ng-click="sendPedido()">
+          Fazer Pedido
+        </button>
+      </ion-content>
+    </ion-tab>
+    <ion-tab title="Pagar Conta" icon-on="ion-card" icon-off="ion-card" ng-if="showPagarTab">
       <ion-content has-header="true" style="top: 8%;height: 100%;" class="detalhe-conta" scroll="false">
         <ion-scroll direction="y">
           <div ng-repeat="cont in conta.categorias">
             <div class="item-divider"type="item-text-wrap" >
               {{cont.nome}}
             </div>
-            <div ng-repeat="prato in cont.pratos">
+            <div ng-repeat="prato in cont.pratos track by $index">
               <ion-item class="item-remove-animate item-icon-right pratos-cardapio" type="item-text-wrap" >
                 <label>{{prato.nome}}</label>
-                <label class = "pull-right">{{prato.quantidade}} x R$ {{prato.preco}}</label>
+                <label class = "pull-right"> R$ {{prato.preco}}</label>
               </ion-item>
               <ion-item class="item-remove-animate item-icon-right pratos-cardapio" type="item-text-wrap" ng-repeat="acompanhamento in prato.acompanhamentos">
                 <label style="padding-left:1em;">{{acompanhamento.nome}}</label>

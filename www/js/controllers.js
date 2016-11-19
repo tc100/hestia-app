@@ -117,7 +117,8 @@ angular.module('starter.controllers', [])
       //Fim sobre
       //Cardapio
       //TODO: Trocar para escolher cardapio do dia e hora
-      $scope.cardapio = $scope.restaurante.cardapios[0];
+      if(typeof $scope.restaurante.cardapios != 'undefined')
+        $scope.cardapio = $scope.restaurante.cardapios[0];
       //fim cardapio
       //Avaliacoes
       $scope.avaliacoes = 0;
@@ -181,6 +182,10 @@ angular.module('starter.controllers', [])
 .controller('LeitorCtrl', function($scope, $state, $cordovaBarcodeScanner, userRef, Restaurantes, $ionicLoading, $ionicPopup, $ionicModal) {
   $scope.user = userRef;
   $scope.cardapio = null;
+  $scope.showPagarTab = false;
+  $scope.pedido = {
+    "categorias": []
+  };
   $scope.conta = {
     "categorias": []
   };
@@ -188,7 +193,7 @@ angular.module('starter.controllers', [])
     if($scope.cardapio == null){
       $scope.readQRCode();
     }
-    Restaurantes.getCardapios("582f972278751e9c2342be83").then(function(data){
+    Restaurantes.getCardapios("5830b26cbb25f4e2050f9bfa").then(function(data){
       //TODO: TIRAR ESSA PARTE COLOCAR ALERTA
       $scope.cardapio = data[0];
       $ionicLoading.hide();
@@ -237,7 +242,6 @@ angular.module('starter.controllers', [])
                         '<h1 class="title">Acompanhamentos</h1>' +
                       '</ion-header-bar>' +
                       '<ion-content class="teste">' +
-                      //TODO: ADD DIVIDER COM numeroDeAcompanhamentos incluidos
                       '<ion-list>'+
                       '<div class="item-divider" type="item-text-wrap" style="text-align:center;" >' +
                         "Acompanhamentos incluídos: {{numeroDeAcompanhamentos}}" +
@@ -320,75 +324,28 @@ angular.module('starter.controllers', [])
 
   $scope.prepareRmvPrato = function(categoria,prato){
     var auxAcompanhamento = false;
-
-    for(x in $scope.conta.categorias){
-      if($scope.conta.categorias[x].nome == categoria){
-        for(y in $scope.conta.categorias[x].pratos){
-          if($scope.conta.categorias[x].pratos[y].nome == prato.nome){
-            if($scope.conta.categorias[x].pratos[y].quantidade > 1){
-                var textModal = '<ion-modal-view>' +
-                                  '<ion-header-bar>' +
-                                    '<h1 class="title">Acompanhamentos</h1>' +
-                                  '</ion-header-bar>' +
-                                  '<ion-content >' +
-                                  '<ion-list >';
-                for(z in $scope.conta.categorias[x].pratos[y].acompanhamentos){
-                  textModal = textModal + '<ion-radio ng-model="acompanhamento" ng-value='+z+'>' + $scope.conta.categorias[x].pratos[y].acompanhamentos[z].nome +'</ion-radio>' ;
-                }
-                textModal = textModal+ '</ion-list>' +
-                                    '</ion-content>' +
-                                    '<div class="footer-tira-acompanhamento">' +
-                                    '<button class="button button-full btn-footer" ng-click="deletePrato('+x+','+y+',acompanhamento)">Confirmar</button></div>' +
-                                '</ion-modal-view>';
-
-
-                $scope.modal =  $ionicModal.fromTemplate(textModal, {
-                  scope: $scope,
-                  animation: 'slide-in-up'
-                });
-                $scope.openModal = function() {
-                  $scope.modal.show();
-                };
-                $scope.openModal();
-
-                $scope.closeModal = function() {
-                  $scope.modal.hide();
-                };
-            }else{
-              $scope.conta.categorias[x].pratos.splice(y,1);
-              $scope.conta = calculateTotal($scope.conta);
+    for(x in $scope.pedido.categorias){
+      if($scope.pedido.categorias[x].nome == categoria){
+        for(y in $scope.pedido.categorias[x].pratos){
+          if($scope.pedido.categorias[x].pratos[y] == prato){
+            $scope.pedido.categorias[x].pratos.splice(y,1);
+            if($scope.pedido.categorias[x].pratos.length  == 0){
+              $scope.pedido.categorias.splice(x,1);
             }
-            //Apagando categoria se não tiver prato na categoria
-            if($scope.conta.categorias[x].pratos.length  == 0){
-              $scope.conta.categorias.splice(x,1);
-              $scope.conta = calculateTotal($scope.conta);
-            }
+            $scope.pedido = calculateTotal($scope.pedido);
+            break;
           }
         }
-        break;
       }
-    }
-    $scope.deletePrato = function(catNum,pratoNum,acomp){
-      $scope.conta.categorias[catNum].pratos[pratoNum].acompanhamentos.splice(acomp,1);
-      $scope.conta.categorias[catNum].pratos[pratoNum].quantidade--;
-      $scope.closeModal();
-      $scope.conta = calculateTotal($scope.conta);
     }
 
   }
 
   $scope.addPrato = function(categoria,prato){
     var foundCategoria = false;
-    for(x in $scope.conta.categorias){
-      if($scope.conta.categorias[x].nome == categoria){
-        for(y in $scope.conta.categorias[x].pratos){
-          if($scope.conta.categorias[x].pratos[y].nome == prato.nome){
-            $scope.conta.categorias[x].pratos[y].quantidade = $scope.conta.categorias[x].pratos[y].quantidade + 1;
-            for(z in prato.acompanhamentos){
-              $scope.conta.categorias[x].pratos[y].acompanhamentos.push(prato.acompanhamentos[z]);
-            }
-          }
-        }
+    for(x in $scope.pedido.categorias){
+      if($scope.pedido.categorias[x].nome == categoria){
+        $scope.pedido.categorias[x].pratos.push(prato);
         foundCategoria = true;
         break;
       }
@@ -399,9 +356,9 @@ angular.module('starter.controllers', [])
         "pratos": []
       };
       categoria.pratos.push(prato);
-      $scope.conta.categorias.push(categoria);
+      $scope.pedido.categorias.push(categoria);
     }
-    $scope.conta = calculateTotal($scope.conta);
+    $scope.pedido = calculateTotal($scope.pedido);
   }
 
    /*
@@ -414,12 +371,46 @@ angular.module('starter.controllers', [])
      return cardapio["show"];
    };
 
+  $scope.sendPedido = function(){
+    if($scope.pedido.categorias.length>0){
+      $scope.showPagarTab = true;
+      if($scope.conta.categorias.length == 0){
+        $scope.conta = $scope.pedido;
+      }else{
+        for(x in $scope.pedido.categorias){
+          for(x2 in $scope.conta.categorias){
+            if($scope.pedido.categorias[x].nome == $scope.conta.categorias[x2].nome){
+              for(y in $scope.pedido.categorias[x].pratos){
+                $scope.conta.categorias[x2].pratos.push($scope.pedido.categorias[x].pratos[y]);
+                $scope.pedido.categorias[x].pratos.splice(y,1);
+                if($scope.pedido.categorias[x].pratos.length == 0){
+                  $scope.pedido.categorias.splice(x,1);
+                }
+              }
+            }
+          }
+        }
+        if($scope.pedido.categorias.length > 0 ){
+          for(x in $scope.pedido.categorias){
+            $scope.conta.categorias.push($scope.pedido.categorias[x]);
+          }
+        }
+
+      }
+      $scope.conta = calculateTotal($scope.conta);
+      $scope.pedido = {
+        "categorias": []
+      };
+      $scope.pedido = calculateTotal($scope.pedido);
+    }
+
+  }
 
   function calculateTotal(conta){
     conta.total = 0.0;
     for(x in conta.categorias){
       for(y in conta.categorias[x].pratos){
-        conta.total = conta.total + ( parseFloat(conta.categorias[x].pratos[y].preco) * conta.categorias[x].pratos[y].quantidade);
+        conta.total = conta.total + parseFloat(conta.categorias[x].pratos[y].preco);
         for(z in conta.categorias[x].pratos[y].acompanhamentos){
           conta.total = conta.total + parseFloat(conta.categorias[x].pratos[y].acompanhamentos[z].preco);
         }
@@ -428,7 +419,7 @@ angular.module('starter.controllers', [])
     conta.total = parseFloat(0.0 + conta.total).toFixed(2);
     return conta;
   }
-  $scope.conta = calculateTotal($scope.conta);
+  $scope.pedido = calculateTotal($scope.pedido);
 
 
 
