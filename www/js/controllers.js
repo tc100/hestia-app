@@ -126,7 +126,7 @@ angular.module('starter.controllers', [])
   });
 })
 
-.controller('LoginCtrl', function($scope, $state, $firebaseAuth, Users) {
+.controller('LoginCtrl', function($scope, $state, $firebaseAuth, Users, $ionicHistory) {
   $scope.authObj = $firebaseAuth();
   $scope.login = function(email,password){
     $scope.authObj.$signInWithEmailAndPassword(email, password).then(function(firebaseUser) {
@@ -152,6 +152,10 @@ angular.module('starter.controllers', [])
   $scope.authObj.$onAuthStateChanged(function(firebaseUser) {
     if (firebaseUser) {
       console.log("Signed in as:", firebaseUser.uid);
+      $ionicHistory.nextViewOptions({
+      disableAnimate: true,
+      disableBack: true
+    });
       $state.go("restaurantes");
     } else {
       console.log("Signed out");
@@ -205,7 +209,8 @@ angular.module('starter.controllers', [])
              $ionicLoading.hide();
            })
          }, function(error) {
-           Document.getElementById("alert").text("Escaneie o QRCode da Mesa");
+           $ionicLoading.hide();
+           $scope.alertText = "Escaneie o QRCode da Mesa: " + JSON.stringify(error);
          });
      },
       {
@@ -225,7 +230,7 @@ angular.module('starter.controllers', [])
                       '<ion-header-bar>' +
                         '<h1 class="title">Acompanhamentos</h1>' +
                       '</ion-header-bar>' +
-                      '<ion-content>' +
+                      '<ion-content class="teste">' +
                       //TODO: ADD DIVIDER COM numeroDeAcompanhamentos incluidos
                       '<ion-list>';
     for(x in prato.acompanhamentos){
@@ -240,7 +245,7 @@ angular.module('starter.controllers', [])
     textModal = textModal+ '</ion-list>' +
                       '</ion-content>' +
                       '<div class="footer-pedido">' +
-                      '<button class="button button-full" ng-click="savePrato()">{{botaoText}}</button>' +
+                      '<button class="button button-full btn-footer" ng-click="savePrato()">{{botaoText}}</button></div>' +
                     '</ion-modal-view>';
 
     //Add acompanhamentos na variavel e tira
@@ -309,18 +314,16 @@ angular.module('starter.controllers', [])
                                   '<ion-header-bar>' +
                                     '<h1 class="title">Acompanhamentos</h1>' +
                                   '</ion-header-bar>' +
-                                  '<ion-content>' +
-                                  '<ion-list>' +
-                                  '<form name="myForm" ng-submit="deletePrato('+x+','+y+',acompanhamento)" style="height:100% !important;">';
+                                  '<ion-content >' +
+                                  '<ion-list >';
                 for(z in $scope.conta.categorias[x].pratos[y].acompanhamentos){
                   textModal = textModal + '<ion-radio ng-model="acompanhamento" ng-value='+z+'>' + $scope.conta.categorias[x].pratos[y].acompanhamentos[z].nome +'</ion-radio>' ;
                                             //TODO: Trocar para aparecer nome e preco com a atualizacao da API e WEB
                 }
                 textModal = textModal+ '</ion-list>' +
-                                  '</ion-content>' +
-                                  '<div class="footer-pedido">' +
-                                  '<button class="button button-full" type="submit">Confirmar</button>' +
-                                  '</div></form>' +
+                                    '</ion-content>' +
+                                    '<div class="footer-tira-acompanhamento">' +
+                                    '<button class="button button-full btn-footer" ng-click="deletePrato('+x+','+y+',acompanhamento)">Confirmar</button></div>' +
                                 '</ion-modal-view>';
 
 
@@ -414,7 +417,7 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('MenuCtrl', function($scope, $firebaseAuth, $ionicLoading, Users, $firebaseObject, userRef){
+.controller('MenuCtrl', function($scope, $firebaseAuth, $ionicLoading, Users, $firebaseObject, userRef, $state){
   $scope.authObj = $firebaseAuth();
   $scope.authObj.$onAuthStateChanged(function(firebaseUser) {
     if (firebaseUser) {
@@ -429,6 +432,7 @@ angular.module('starter.controllers', [])
     } else {
       userRef = {};
       console.log("Signed out");
+      $state.go('login');
     }
   });
 

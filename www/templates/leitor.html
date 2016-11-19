@@ -7,7 +7,7 @@
     <!-- TODO: Trocar icone de location para algum de sobre -->
     <ion-tab title="Cardapio" icon-on="ion-ios-book" icon-off="ion-ios-book-outline">
       <ion-content has-header="true" style="top: 8%;height: 100%;">
-
+        <p>{{alertText}}</p>
         <ion-list>
           <div ng-repeat="categoria in cardapio.categorias">
             <ion-item class="item-stable" ng-click="toggleGroup(categoria)" ng-class="{active: isGroupShown(categoria)}">
@@ -45,7 +45,7 @@
             </div>
           </div>
         </ion-scroll>
-        <button class="button button-block total-cardapio">
+        <button class="button button-full total-cardapio">
           Pagar: R$ {{conta.total}}
         </button>
       </ion-content>
