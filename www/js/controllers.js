@@ -174,9 +174,12 @@ angular.module('starter.controllers', [])
   }
 })
 
-.controller('LeitorCtrl', function($scope, $state, $cordovaBarcodeScanner, userRef, Restaurantes, $ionicLoading) {
+.controller('LeitorCtrl', function($scope, $state, $cordovaBarcodeScanner, userRef, Restaurantes, $ionicLoading, $ionicPopup, $ionicModal) {
   $scope.user = userRef;
   $scope.cardapio = null;
+  $scope.conta = {
+    "categorias": []
+  };
   $scope.$on('$ionicView.enter', function() {
     if($scope.cardapio == null){
       $scope.readQRCode();
@@ -192,8 +195,6 @@ angular.module('starter.controllers', [])
        $cordovaBarcodeScanner
          .scan()
          .then(function(barcodeData) {
-           // Success! Barcode data is here
-
            $ionicLoading.show({
              template: "<ion-spinner icon='spiral'></ion-spinner>"
            });
@@ -204,7 +205,6 @@ angular.module('starter.controllers', [])
              $ionicLoading.hide();
            })
          }, function(error) {
-           // An error occurred
            Document.getElementById("alert").text("Escaneie o QRCode da Mesa");
          });
      },
@@ -218,12 +218,145 @@ angular.module('starter.controllers', [])
 
   //adicionar pratos
   $scope.prepareAddPrato = function(categoria, prato){
-    //TODO: popup para escolher categorias e adicionar elas
-    $scope.addPrato(categoria,prato);
+    $scope.quantidadeAcompanhamento = 0;
+    $scope.acompanhamentos = [];
+    $scope.botaoText = "Não quero Acompanhamentos";
+    var textModal = '<ion-modal-view>' +
+                      '<ion-header-bar>' +
+                        '<h1 class="title">Acompanhamentos</h1>' +
+                      '</ion-header-bar>' +
+                      '<ion-content>' +
+                      //TODO: ADD DIVIDER COM numeroDeAcompanhamentos incluidos
+                      '<ion-list>';
+    for(x in prato.acompanhamentos){
+      textModal = textModal + '<ion-item item="item">' +
+                                '<label class="checkbox">' +
+                                  '<input type="checkbox" ng-model="acompanhamento'+x+'" ng-true-value="'+x+'" ng-false-value=null ng-change="checkAcompanhamento(acompanhamento'+x+')">' +
+                                '</label>' +
+                                //TODO: Trocar para aparecer nome e preco com a atualizacao da API e WEB
+                                prato.acompanhamentos[x]  +
+                              '</ion-item>';
+    }
+    textModal = textModal+ '</ion-list>' +
+                      '</ion-content>' +
+                      '<div class="footer-pedido">' +
+                      '<button class="button button-full" ng-click="savePrato()">{{botaoText}}</button>' +
+                    '</ion-modal-view>';
+
+    //Add acompanhamentos na variavel e tira
+    $scope.checkAcompanhamento = function(check){
+      if(check == null){
+        if($scope.quantidadeAcompanhamento != 0){
+          if($scope.quantidadeAcompanhamento == 1){
+            $scope.acompanhamentos = [];
+          }else{
+            //retirando da variavel de acompanhamentos
+            for(x in $scope.acompanhamentos){
+              //TODO: TROCAR PARA NOME
+              if($scope.acompanhamentos[x].nome == prato.acompanhamentos[x]){
+                $scope.acompanhamentos.splice(x,1);
+              }
+            }
+          }
+          $scope.quantidadeAcompanhamento = $scope.quantidadeAcompanhamento -1
+        }else
+          $scope.quantidadeAcompanhamento = 0;
+      }else{
+        //adiciona no array de acompanhamentos
+        $scope.acompanhamentos.push({
+          //TODO: add preco aqui
+          "nome": prato.acompanhamentos[check]
+        });
+        $scope.quantidadeAcompanhamento++;
+      }
+      if($scope.quantidadeAcompanhamento != 0){
+        $scope.botaoText = "Selecionado(s): " + $scope.quantidadeAcompanhamento;
+      }else{
+        $scope.botaoText = "Não quero Acompanhamentos";
+      }
+    }
+
+    $scope.savePrato = function(){
+      var pratoAux = JSON.parse(JSON.stringify(prato));
+      pratoAux.acompanhamentos = $scope.acompanhamentos;
+      $scope.addPrato(categoria,pratoAux);
+      $scope.closeModal();
+    }
+
+    $scope.modal =  $ionicModal.fromTemplate(textModal, {
+      scope: $scope,
+      animation: 'slide-in-up'
+    });
+    $scope.openModal = function() {
+      $scope.modal.show();
+    };
+    $scope.openModal();
+
+    $scope.closeModal = function() {
+      $scope.modal.hide();
+    };
   }
+
   $scope.prepareRmvPrato = function(categoria,prato){
-    console.log("prato: " + JSON.stringify(prato));
-    //TODO: Verificar se soh tem um, se for mais de 1 abrir popup para selecionar qual acompanhamento tirar; removePrato;
+    var auxAcompanhamento = false;
+
+    for(x in $scope.conta.categorias){
+      if($scope.conta.categorias[x].nome == categoria){
+        for(y in $scope.conta.categorias[x].pratos){
+          if($scope.conta.categorias[x].pratos[y].nome == prato.nome){
+            if($scope.conta.categorias[x].pratos[y].quantidade > 1){
+                var textModal = '<ion-modal-view>' +
+                                  '<ion-header-bar>' +
+                                    '<h1 class="title">Acompanhamentos</h1>' +
+                                  '</ion-header-bar>' +
+                                  '<ion-content>' +
+                                  '<ion-list>' +
+                                  '<form name="myForm" ng-submit="deletePrato('+x+','+y+',acompanhamento)" style="height:100% !important;">';
+                for(z in $scope.conta.categorias[x].pratos[y].acompanhamentos){
+                  textModal = textModal + '<ion-radio ng-model="acompanhamento" ng-value='+z+'>' + $scope.conta.categorias[x].pratos[y].acompanhamentos[z].nome +'</ion-radio>' ;
+                                            //TODO: Trocar para aparecer nome e preco com a atualizacao da API e WEB
+                }
+                textModal = textModal+ '</ion-list>' +
+                                  '</ion-content>' +
+                                  '<div class="footer-pedido">' +
+                                  '<button class="button button-full" type="submit">Confirmar</button>' +
+                                  '</div></form>' +
+                                '</ion-modal-view>';
+
+
+                $scope.modal =  $ionicModal.fromTemplate(textModal, {
+                  scope: $scope,
+                  animation: 'slide-in-up'
+                });
+                $scope.openModal = function() {
+                  $scope.modal.show();
+                };
+                $scope.openModal();
+
+                $scope.closeModal = function() {
+                  $scope.modal.hide();
+                };
+            }else{
+              $scope.conta.categorias[x].pratos.splice(y,1);
+              $scope.conta = calculateTotal($scope.conta);
+            }
+            //Apagando categoria se não tiver prato na categoria
+            if($scope.conta.categorias[x].pratos.length  == 0){
+              $scope.conta.categorias.splice(x,1);
+              $scope.conta = calculateTotal($scope.conta);
+            }
+          }
+        }
+        break;
+      }
+    }
+    $scope.deletePrato = function(catNum,pratoNum,acomp){
+      $scope.conta.categorias[catNum].pratos[pratoNum].acompanhamentos.splice(acomp,1);
+      $scope.conta.categorias[catNum].pratos[pratoNum].quantidade--;
+      $scope.closeModal();
+      $scope.conta = calculateTotal($scope.conta);
+    }
+
   }
 
   $scope.addPrato = function(categoria,prato){
@@ -232,7 +365,7 @@ angular.module('starter.controllers', [])
       if($scope.conta.categorias[x].nome == categoria){
         for(y in $scope.conta.categorias[x].pratos){
           if($scope.conta.categorias[x].pratos[y].nome == prato.nome){
-            $scope.conta.categorias[x].pratos[y].quantidade = $scope.conta.categorias[x].pratos[y].quantidade++;
+            $scope.conta.categorias[x].pratos[y].quantidade = $scope.conta.categorias[x].pratos[y].quantidade + 1;
             for(z in prato.acompanhamentos){
               $scope.conta.categorias[x].pratos[y].acompanhamentos.push(prato.acompanhamentos[z]);
             }
@@ -263,12 +396,9 @@ angular.module('starter.controllers', [])
      return cardapio["show"];
    };
 
-  //TODO: Fazer metodos para adicionar pratos e categorias novos e deixar essa scope dinamica
-  $scope.conta = {
-    "categorias": []
-  };
 
   function calculateTotal(conta){
+    //TODO: Adicionar na conta preco dos acompanhamentos
     conta.total = 0.0;
     for(x in conta.categorias){
       for(y in conta.categorias[x].pratos){

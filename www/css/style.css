@@ -179,3 +179,16 @@
   border: 1px solid black !important;
   margin-right: 10px !important;
 }
+
+.footer-pedido{
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+  height:8%;
+}
+.footer-pedido button{
+  color: white !important;
+  text-align: center;
+  font-size: 1em;
+  background-color:#C84C00;
+}
