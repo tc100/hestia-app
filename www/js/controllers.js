@@ -193,11 +193,11 @@ angular.module('starter.controllers', [])
     if($scope.cardapio == null){
       $scope.readQRCode();
     }
-    Restaurantes.getCardapios("5830b26cbb25f4e2050f9bfa").then(function(data){
+  /*  Restaurantes.getCardapios("5830b26cbb25f4e2050f9bfa").then(function(data){
       //TODO: TIRAR ESSA PARTE COLOCAR ALERTA
       $scope.cardapio = data[0];
       $ionicLoading.hide();
-    })
+    })*/
   });
   $scope.readQRCode = function(){
       document.addEventListener("deviceready", function () {
@@ -207,20 +207,21 @@ angular.module('starter.controllers', [])
            $ionicLoading.show({
              template: "<ion-spinner icon='spiral'></ion-spinner>"
            });
-           var resultado = JSON.parse(barcodeData.text);
-           if(typeof resultado.id != "undefined"){
-             Restaurantes.getCardapios(resultado.id).then(function(data){
-               //TODO: Trocar para cardapio de dia e hora corretos
-               $scope.cardapio = data[0];
-               $ionicLoading.hide();
-             })
-           }else{
-             $ionicLoading.hide();
-             $scope.alertText = "Escaneie o QRCode da Mesa";
-           }
+           if(barcodeData.text != ""){
+             var resultado = JSON.parse(barcodeData.text);
+               Restaurantes.getCardapios(resultado.id).then(function(data){
+                 //TODO: Trocar para cardapio de dia e hora corretos
+                 $scope.cardapio = data[0];
+                 $ionicLoading.hide();
+               }, function(err){
+                 console.erro("erro ao pegar cardapio");
+                 $ionicLoading.hide();
+               });
+            }else{
+              $ionicLoading.hide();
+            }
          }, function(error) {
            $ionicLoading.hide();
-           $scope.alertText = "Erro ao scannear: " + JSON.stringify(error);
          });
      },
       {
