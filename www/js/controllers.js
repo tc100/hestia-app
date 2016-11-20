@@ -179,9 +179,11 @@ angular.module('starter.controllers', [])
   }
 })
 
-.controller('LeitorCtrl', function($scope, $state, $cordovaBarcodeScanner, userRef, Restaurantes, $ionicLoading, $ionicPopup, $ionicModal) {
+.controller('LeitorCtrl', function($scope, $state, $cordovaBarcodeScanner, userRef, Users, Restaurantes, $ionicLoading, $ionicPopup, $ionicModal) {
   $scope.user = userRef;
   $scope.cardapio = null;
+  $scope.restauranteId = null;
+  $scope.mesa = null;
   $scope.showPagarTab = false;
   $scope.pedido = {
     "categorias": []
@@ -209,6 +211,8 @@ angular.module('starter.controllers', [])
            });
            if(barcodeData.text != ""){
              var resultado = JSON.parse(barcodeData.text);
+             $scope.restauranteId = resultado.id;
+             $scope.mesa = resultado.mesa;
                Restaurantes.getCardapios(resultado.id).then(function(data){
                  //TODO: Trocar para cardapio de dia e hora corretos
                  $scope.cardapio = data[0];
@@ -283,7 +287,7 @@ angular.module('starter.controllers', [])
           $scope.quantidadeAcompanhamento = 0;
       }else{
         //adiciona no array de acompanhamentos
-        if($scope.acompanhamentos.length != 0)
+        if($scope.numeroDeAcompanhamentos == 0)
           $scope.acompanhamentos.push(prato.acompanhamentos[check]);
         else{
           $scope.acompanhamentos.push({
@@ -375,6 +379,7 @@ angular.module('starter.controllers', [])
   $scope.sendPedido = function(){
     if($scope.pedido.categorias.length>0){
       $scope.showPagarTab = true;
+      Users.addPedido($scope.pedido, $scope.restauranteId, $scope.mesa, $scope.user.$id);
       if($scope.conta.categorias.length == 0){
         $scope.conta = $scope.pedido;
       }else{

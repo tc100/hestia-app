@@ -41,7 +41,6 @@ angular.module('starter.services', [])
           });
         },
         addCard: function(numero, nome, mes, ano, userId){
-           var nomeCard = numero+nome;
            var childPush = firebase.database().ref('users/' + userId).child('cards').push();
            childPush.set({
                 "numero": numero,
@@ -50,6 +49,35 @@ angular.module('starter.services', [])
                 "ano": ano,
                 "ativo": true
             });
+        },
+        addPedido: function(pedido, restauranteID, mesa, userID)
+        {
+          var pedidoPush = firebase.database().ref('pedidos/'+restauranteID).child('pedido').push();
+          pedidoPush.set({
+           "userID": userID,
+           "mesa": mesa
+          });
+          var pedidoKey = pedidoPush.key;
+          for (x in pedido.categorias)
+          {
+            for(i in pedido.categorias[x].pratos)
+            {
+              var pratoPush = firebase.database().ref('pedidos/'+restauranteID+'/pedido/'+pedidoKey).child('prato').push();
+              pratoPush.set({
+               "nome": pedido.categorias[x].pratos[i].nome,
+               "preco": pedido.categorias[x].pratos[i].preco
+              });
+              var pratoKey = pratoPush.key;
+              for (j in pedido.categorias[x].pratos[i].acompanhamentos)
+              {
+                var acompPush = firebase.database().ref('pedidos/'+restauranteID+'/pedido/'+pedidoKey+'/prato/'+pratoKey).child('acompanhamento').push();
+                acompPush.set({
+                 "nome": pedido.categorias[x].pratos[i].acompanhamentos[j].nome
+                 "preco": pedido.categorias[x].pratos[i].acompanhamentos[j].preco
+                });
+              }
+            }
+          }
         }
     }
 });
