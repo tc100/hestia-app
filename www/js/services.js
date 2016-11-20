@@ -72,7 +72,7 @@ angular.module('starter.services', [])
               {
                 var acompPush = firebase.database().ref('pedidos/'+restauranteID+'/pedido/'+pedidoKey+'/prato/'+pratoKey).child('acompanhamento').push();
                 acompPush.set({
-                 "nome": pedido.categorias[x].pratos[i].acompanhamentos[j].nome
+                 "nome": pedido.categorias[x].pratos[i].acompanhamentos[j].nome,
                  "preco": pedido.categorias[x].pratos[i].acompanhamentos[j].preco
                 });
               }
