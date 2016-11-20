@@ -379,7 +379,8 @@ angular.module('starter.controllers', [])
   $scope.sendPedido = function(){
     if($scope.pedido.categorias.length>0){
       $scope.showPagarTab = true;
-      Users.addPedido($scope.pedido, $scope.restauranteId, $scope.mesa, $scope.user.$id);
+      Users.addPedido($scope.pedido.categorias, $scope.restauranteId, $scope.mesa, $scope.user.$id);
+      Users.addPedidoUSER($scope.pedido.categorias, $scope.restauranteId, $scope.mesa, $scope.user.$id);
       if($scope.conta.categorias.length == 0){
         $scope.conta = $scope.pedido;
       }else{

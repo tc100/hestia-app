@@ -50,30 +50,76 @@ angular.module('starter.services', [])
                 "ativo": true
             });
         },
-        addPedido: function(pedido, restauranteID, mesa, userID)
+        addPedidoUSER: function(pedido, restauranteID, mesa, userID)
         {
-          var pedidoPush = firebase.database().ref('pedidos/'+restauranteID).child('pedido').push();
+          debugger;
+          var pedidoPush = firebase.database().ref('users/' + userID+'/pedidos/'+restauranteID).child('pedido').push();
           pedidoPush.set({
            "userID": userID,
            "mesa": mesa
           });
           var pedidoKey = pedidoPush.key;
-          for (x in pedido.categorias)
+          for (var x = 0; x < pedido.length; x++)
           {
-            for(i in pedido.categorias[x].pratos)
+            var p = pedido[x];
+            for(var i= 0 ; i  < p.pratos.length; i++)
             {
-              var pratoPush = firebase.database().ref('pedidos/'+restauranteID+'/pedido/'+pedidoKey).child('prato').push();
+              var prato = p.pratos[i];
+              var nome = prato.nome;
+              var preco = prato.preco;
+              var pratoPush = firebase.database().ref('users/' + userID+'/pedidos/'+restauranteID+'/pedido/'+pedidoKey).child('prato').push();
               pratoPush.set({
-               "nome": pedido.categorias[x].pratos[i].nome,
-               "preco": pedido.categorias[x].pratos[i].preco
+               "nome": nome,
+               "preco": preco
               });
               var pratoKey = pratoPush.key;
-              for (j in pedido.categorias[x].pratos[i].acompanhamentos)
+              for (var j = 0; j < prato.acompanhamentos.length; j++)
               {
+                var acomp = prato.acompanhamentos[j];
+                var acompnome = acomp.nome;
+                var acomppreco = acomp.preco;
+                var acompPush = firebase.database().ref('users/' + userID+'/pedidos/'+restauranteID+'/pedido/'+pedidoKey+'/prato/'+pratoKey).child('acompanhamento').push();
+                acompPush.set({
+                 "nome": acompnome,
+                 "preco": acomppreco
+                });
+              }
+            }
+          }
+        },
+        addPedido: function(pedido, restauranteID, mesa, userID)
+        {
+          debugger;
+          var pedidoPush = firebase.database().ref('pedidos/'+restauranteID).child('pedido').push();
+          pedidoPush.set({
+           "userID": userID,
+           "mesa": mesa,
+           "ativo":true,
+          });
+          var pedidoKey = pedidoPush.key;
+          for (var x = 0; x < pedido.length; x++)
+          {
+            var p = pedido[x];
+            for(var i= 0 ; i  < p.pratos.length; i++)
+            {
+              var prato = p.pratos[i];
+              var nome = prato.nome;
+              var preco = prato.preco;
+              var pratoPush = firebase.database().ref('pedidos/'+restauranteID+'/pedido/'+pedidoKey).child('prato').push();
+              pratoPush.set({
+               "nome": nome,
+               "preco": preco
+              });
+              var pratoKey = pratoPush.key;
+              for (var j = 0; j < prato.acompanhamentos.length; j++)
+              {
+                var acomp = prato.acompanhamentos[j];
+                var acompnome = acomp.nome;
+                var acomppreco = acomp.preco;
                 var acompPush = firebase.database().ref('pedidos/'+restauranteID+'/pedido/'+pedidoKey+'/prato/'+pratoKey).child('acompanhamento').push();
                 acompPush.set({
-                 "nome": pedido.categorias[x].pratos[i].acompanhamentos[j].nome,
-                 "preco": pedido.categorias[x].pratos[i].acompanhamentos[j].preco
+                 "nome": acompnome,
+                 "preco": acomppreco
                 });
               }
             }
