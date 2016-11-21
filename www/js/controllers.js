@@ -184,6 +184,7 @@ angular.module('starter.controllers', [])
   $scope.cardapio = null;
   $scope.restauranteId = null;
   $scope.mesa = null;
+  $scope.ContaID = null;
   $scope.showPagarTab = false;
   $scope.pedido = {
     "categorias": []
@@ -379,8 +380,20 @@ angular.module('starter.controllers', [])
   $scope.sendPedido = function(){
     if($scope.pedido.categorias.length>0){
       $scope.showPagarTab = true;
-      Users.addPedido($scope.pedido.categorias, $scope.restauranteId, $scope.mesa, $scope.user.$id);
-      Users.addPedidoUSER($scope.pedido.categorias, $scope.restauranteId, $scope.mesa, $scope.user.$id);
+      if($scope.ContaID == null)
+      {
+        $scope.ContaID = Users.addConta($scope.restauranteId, $scope.user.$id);
+      }
+      if($scope.ContaID != null){
+        var total = 0;
+        debugger;
+        if($scope.conta.categorias.length == 0)
+          total = Number($scope.pedido.total);
+        else
+          total = Number($scope.pedido.total) + Number($scope.conta.total);
+        Users.addPedido($scope.pedido.categorias, $scope.restauranteId, $scope.mesa, $scope.user.$id, $scope.ContaID, total);
+        Users.addPedidoUSER($scope.pedido.categorias, $scope.restauranteId, $scope.mesa, $scope.user.$id);
+      }
       if($scope.conta.categorias.length == 0){
         $scope.conta = $scope.pedido;
       }else{

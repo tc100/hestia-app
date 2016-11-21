@@ -53,10 +53,12 @@ angular.module('starter.services', [])
         addPedidoUSER: function(pedido, restauranteID, mesa, userID)
         {
           debugger;
-          var pedidoPush = firebase.database().ref('users/' + userID+'/pedidos/'+restauranteID).child('pedido').push();
+          var pedidoPush = firebase.database().ref('users/' + userID).child('historico').push();
+          var date = new Date();
+          var data = date.getTime();
           pedidoPush.set({
-           "userID": userID,
-           "mesa": mesa
+           "restaurante": restauranteID,
+           "data": data
           });
           var pedidoKey = pedidoPush.key;
           for (var x = 0; x < pedido.length; x++)
@@ -67,7 +69,7 @@ angular.module('starter.services', [])
               var prato = p.pratos[i];
               var nome = prato.nome;
               var preco = prato.preco;
-              var pratoPush = firebase.database().ref('users/' + userID+'/pedidos/'+restauranteID+'/pedido/'+pedidoKey).child('prato').push();
+              var pratoPush = firebase.database().ref('users/' + userID+'/historico/'+pedidoKey).child('prato').push();
               pratoPush.set({
                "nome": nome,
                "preco": preco
@@ -78,7 +80,7 @@ angular.module('starter.services', [])
                 var acomp = prato.acompanhamentos[j];
                 var acompnome = acomp.nome;
                 var acomppreco = acomp.preco;
-                var acompPush = firebase.database().ref('users/' + userID+'/pedidos/'+restauranteID+'/pedido/'+pedidoKey+'/prato/'+pratoKey).child('acompanhamento').push();
+                var acompPush = firebase.database().ref('users/' + userID+'/historico/'+pedidoKey+'/prato/'+pratoKey).child('acompanhamento').push();
                 acompPush.set({
                  "nome": acompnome,
                  "preco": acomppreco
@@ -87,14 +89,32 @@ angular.module('starter.services', [])
             }
           }
         },
-        addPedido: function(pedido, restauranteID, mesa, userID)
+        addConta: function (restauranteID,userID)
+        {
+          var contaPush = firebase.database().ref('restaurantes/'+restauranteID).child('contas').push();
+          var date = new Date();
+          var data = date.getTime();
+          contaPush.set({
+           "userID": userID,
+           "aberto":true,
+           "data": data,
+           "total": "0.0"
+          });
+          return contaPush.key;
+        },
+        addPedido: function(pedido, restauranteID, mesa, userID,contaID, total)
         {
           debugger;
-          var pedidoPush = firebase.database().ref('pedidos/'+restauranteID).child('pedido').push();
+          var contaPush = firebase.database().ref('restaurantes/'+restauranteID+'/contas/'+contaID);
+          contaPush.update({"total": total});
+          var pedidoPush = firebase.database().ref('restaurantes/'+restauranteID+"/contas/"+contaID).child('pedidos').push();
+          var date = new Date();
+          var data = date.getTime();
           pedidoPush.set({
            "userID": userID,
            "mesa": mesa,
            "ativo":true,
+           "data":data
           });
           var pedidoKey = pedidoPush.key;
           for (var x = 0; x < pedido.length; x++)
@@ -105,7 +125,7 @@ angular.module('starter.services', [])
               var prato = p.pratos[i];
               var nome = prato.nome;
               var preco = prato.preco;
-              var pratoPush = firebase.database().ref('pedidos/'+restauranteID+'/pedido/'+pedidoKey).child('prato').push();
+              var pratoPush = firebase.database().ref('restaurantes/'+restauranteID+"/contas/"+contaID+'/pedidos/'+pedidoKey).child('prato').push();
               pratoPush.set({
                "nome": nome,
                "preco": preco
@@ -116,7 +136,7 @@ angular.module('starter.services', [])
                 var acomp = prato.acompanhamentos[j];
                 var acompnome = acomp.nome;
                 var acomppreco = acomp.preco;
-                var acompPush = firebase.database().ref('pedidos/'+restauranteID+'/pedido/'+pedidoKey+'/prato/'+pratoKey).child('acompanhamento').push();
+                var acompPush = firebase.database().ref('restaurantes/'+restauranteID+"/contas/"+contaID+'/pedidos/'+pedidoKey+'/prato/'+pratoKey).child('acompanhamento').push();
                 acompPush.set({
                  "nome": acompnome,
                  "preco": acomppreco
