@@ -52,7 +52,6 @@ angular.module('starter.services', [])
         },
         addPedidoUSER: function(pedido, restauranteID, mesa, userID)
         {
-          debugger;
           var pedidoPush = firebase.database().ref('users/' + userID).child('historico').push();
           var date = new Date();
           var data = date.getTime();
@@ -102,9 +101,13 @@ angular.module('starter.services', [])
           });
           return contaPush.key;
         },
+        closeConta: function (restauranteID,contaID)
+        {
+          var contaPush = firebase.database().ref('restaurantes/'+restauranteID+'/contas/'+contaID);
+          contaPush.update({"aberto": false});
+        },
         addPedido: function(pedido, restauranteID, mesa, userID,contaID, total)
         {
-          debugger;
           var contaPush = firebase.database().ref('restaurantes/'+restauranteID+'/contas/'+contaID);
           contaPush.update({"total": total});
           var pedidoPush = firebase.database().ref('restaurantes/'+restauranteID+"/contas/"+contaID).child('pedidos').push();

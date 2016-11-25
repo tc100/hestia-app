@@ -181,9 +181,10 @@ angular.module('starter.controllers', [])
 
 .controller('LeitorCtrl', function($scope, $state, $cordovaBarcodeScanner, userRef, Users, Restaurantes, $ionicLoading, $ionicPopup, $ionicModal) {
   $scope.user = userRef;
+  $scope.cartoes = $scope.user.cards;
   $scope.cardapio = null;
-  $scope.restauranteId = null;
-  $scope.mesa = null;
+  $scope.restauranteId = "5830b26cbb25f4e2050f9bfa";
+  $scope.mesa = 1;
   $scope.ContaID = null;
   $scope.showPagarTab = false;
   $scope.pedido = {
@@ -202,7 +203,15 @@ angular.module('starter.controllers', [])
       $ionicLoading.hide();
     })*/
   });
-  $scope.readQRCode = function(){
+  Restaurantes.getCardapios($scope.restauranteId).then(function(data){
+    //TODO: Trocar para cardapio de dia e hora corretos
+    $scope.cardapio = data[0];
+    $ionicLoading.hide();
+  }, function(err){
+    console.erro("erro ao pegar cardapio");
+    $ionicLoading.hide();
+  });
+  /*$scope.readQRCode = function(){
       document.addEventListener("deviceready", function () {
        $cordovaBarcodeScanner
          .scan()
@@ -235,7 +244,7 @@ angular.module('starter.controllers', [])
           "prompt" : "Scanneie o QRCode",
           "formats" : "QR_CODE"
       });
-  }
+  }*/
 
   //adicionar pratos
   $scope.prepareAddPrato = function(categoria, prato){
@@ -344,7 +353,6 @@ angular.module('starter.controllers', [])
         }
       }
     }
-
   }
 
   $scope.addPrato = function(categoria,prato){
@@ -376,7 +384,65 @@ angular.module('starter.controllers', [])
    $scope.isGroupShown = function(cardapio) {
      return cardapio["show"];
    };
+   $scope.showPagamento = function()
+   {
+     $scope.cartoes = $scope.user.cards;
+     var textModal = '<ion-modal-view>' +
+                       '<ion-header-bar>' +
+                         '<h1 class="title">Forma de Pagamento</h1>' +
+                       '</ion-header-bar>' +
+                       '<ion-content class="teste">' +
+                       '<ion-list>'+
+                       '<div class="item-divider" type="item-text-wrap" style="text-align:center;" >' +
+                         "<b>Cartão</b>" +
+                       '</div>'+
+                       '<button ng-click = "selectCard({{cartao}})" class="item item-icon-right" ng-repeat="cartao in cartoes">'+
+                         '<i class="icon ion-card"></i>'+
+                         '<label><b>{{cartao.nome}} ...</b><label class= "pull-right">{{cartao.numero}}</label></label>'+
+                       '</button>'+
+                       '<div class="item-divider" type="item-text-wrap" style="text-align:center;" >' +
+                         "<b>Dinheiro</b>" +
+                       '</div>'+
+                       '<button class="item item-icon-right" >'+
+                         '<i class="icon ion-cash"></i>'+
+                         '<label><b>Pagar em Dinheiro</b><label class= "pull-right">Chamar Gaçon</label></label>'+
+                       '</button>'+
+                       '</ion-list>' +
+                       '</ion-content>' +
+                       '<div class="footer-pedido">' +
+                       '<button class="button button-full btn-footer" ng-click="closeModal()">Cancelar</button></div>' +
+                     '</ion-modal-view>';
 
+       $scope.modal =  $ionicModal.fromTemplate(textModal, {
+         scope: $scope,
+         animation: 'slide-in-up'
+       });
+
+       $scope.openModal = function() {
+         $scope.modal.show();
+       };
+       $scope.openModal();
+
+       $scope.closeModal = function() {
+         $scope.modal.hide();
+       };
+
+       $scope.selectCard = function(cartao)
+       {
+         //fazer validação com o cartão depois fechar conta fechar modall e abrir outra
+         Users.closeConta($scope.restauranteId, $scope.ContaID);
+         $scope.cardapio = null;
+         $scope.ContaID = null;
+         //$scope.showPagarTab = false;
+         $scope.pedido = {
+           "categorias": []
+         };
+         $scope.conta = {
+           "categorias": []
+         };
+         $scope.closeModal();
+       }
+   }
   $scope.sendPedido = function(){
     if($scope.pedido.categorias.length>0){
       $scope.showPagarTab = true;
@@ -384,19 +450,25 @@ angular.module('starter.controllers', [])
       {
         $scope.ContaID = Users.addConta($scope.restauranteId, $scope.user.$id);
       }
-      if($scope.ContaID != null){
+      if($scope.ContaID != null)
+      {
         var total = 0;
-        debugger;
         if($scope.conta.categorias.length == 0)
+        {
           total = Number($scope.pedido.total);
+        }
         else
+        {
           total = Number($scope.pedido.total) + Number($scope.conta.total);
+        }
         Users.addPedido($scope.pedido.categorias, $scope.restauranteId, $scope.mesa, $scope.user.$id, $scope.ContaID, total);
         Users.addPedidoUSER($scope.pedido.categorias, $scope.restauranteId, $scope.mesa, $scope.user.$id);
       }
       if($scope.conta.categorias.length == 0){
         $scope.conta = $scope.pedido;
-      }else{
+      }
+      else
+      {
         for(x in $scope.pedido.categorias){
           for(x2 in $scope.conta.categorias){
             if($scope.pedido.categorias[x].nome == $scope.conta.categorias[x2].nome){
@@ -423,7 +495,6 @@ angular.module('starter.controllers', [])
       };
       $scope.pedido = calculateTotal($scope.pedido);
     }
-
   }
 
   function calculateTotal(conta){
