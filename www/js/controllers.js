@@ -179,7 +179,7 @@ angular.module('starter.controllers', [])
   }
 })
 
-.controller('LeitorCtrl', function($scope, $state, $cordovaBarcodeScanner, userRef, Users, Restaurantes, $ionicLoading, $ionicPopup, $ionicModal) {
+.controller('LeitorCtrl', function($scope, $ionicTabsDelegate, $state, $cordovaBarcodeScanner, userRef, Users, Restaurantes, $ionicLoading, $ionicPopup, $ionicModal) {
   $scope.user = userRef;
   $scope.cartoes = $scope.user.cards;
   $scope.cardapio = null;
@@ -188,14 +188,16 @@ angular.module('starter.controllers', [])
   $scope.ContaID = null;
   $scope.showPagarTab = false;
   $scope.pedido = {
-    "categorias": []
+    "categorias": [],
+    "total": 0
   };
   $scope.conta = {
-    "categorias": []
+    "categorias": [],
+    "total": 0
   };
   $scope.$on('$ionicView.enter', function() {
     if($scope.cardapio == null){
-      $scope.readQRCode();
+      //$scope.readQRCode();
     }
   /*  Restaurantes.getCardapios("5830b26cbb25f4e2050f9bfa").then(function(data){
       //TODO: TIRAR ESSA PARTE COLOCAR ALERTA
@@ -384,6 +386,37 @@ angular.module('starter.controllers', [])
    $scope.isGroupShown = function(cardapio) {
      return cardapio["show"];
    };
+
+   $scope.showAvaliacao = function()
+   {
+     var textModal = '<ion-modal-view>' +
+                       '<ion-header-bar>' +
+                         '<h1 class="title">Avaliação</h1>' +
+                       '</ion-header-bar>' +
+                       '<ion-content class="avaliacao">' +
+                         '<ion-item class="item item-input-inset"><label class="item-input-wrapper">'+
+                           '<input type ="text" placeholder = "Comentário" ng-model="avaliacao.comentario"> </label>'+
+                         '</ion-item>'+
+                        '</ion-content>' +
+                       '<div class="footer-pedido">' +
+                       '<button class="button button-full btn-footer" ng-click="closeModal()">Enviar Avaliação</button></div>' +
+                     '</ion-modal-view>';
+
+       $scope.modal =  $ionicModal.fromTemplate(textModal, {
+         scope: $scope,
+         animation: 'slide-in-up'
+       });
+
+       $scope.openModal = function() {
+         $scope.modal.show();
+       };
+       $scope.openModal();
+
+       $scope.closeModal = function() {
+         $scope.modal.hide();
+         $scope.showPagarTab = false;
+       };
+   }
    $scope.showPagamento = function()
    {
      $scope.cartoes = $scope.user.cards;
@@ -391,7 +424,7 @@ angular.module('starter.controllers', [])
                        '<ion-header-bar>' +
                          '<h1 class="title">Forma de Pagamento</h1>' +
                        '</ion-header-bar>' +
-                       '<ion-content class="teste">' +
+                       '<ion-content class="pagamento">' +
                        '<ion-list>'+
                        '<div class="item-divider" type="item-text-wrap" style="text-align:center;" >' +
                          "<b>Cartão</b>" +
@@ -433,16 +466,21 @@ angular.module('starter.controllers', [])
          Users.closeConta($scope.restauranteId, $scope.ContaID);
          $scope.cardapio = null;
          $scope.ContaID = null;
-         //$scope.showPagarTab = false;
+         $ionicTabsDelegate.select(0);
          $scope.pedido = {
-           "categorias": []
+           "categorias": [],
+           "total": 0
          };
          $scope.conta = {
-           "categorias": []
+           "categorias": [],
+           "total": 0
          };
          $scope.closeModal();
+         $scope.showAvaliacao();
+
        }
    }
+
   $scope.sendPedido = function(){
     if($scope.pedido.categorias.length>0){
       $scope.showPagarTab = true;
