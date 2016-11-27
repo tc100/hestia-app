@@ -136,6 +136,16 @@
   color: white;
 }
 
+.tabs-hestia2 .tabs{
+  background-color: #C84C00 !important;
+  border: 0 !important;
+}
+
+.tabs-hestia2 .tab-item{
+  background-color: #C84C00 !important;
+  color: white;
+}
+
 .tab-item-active{
   margin-bottom: 1px solid #C84C00;
 }
