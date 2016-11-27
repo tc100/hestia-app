@@ -194,6 +194,7 @@ angular.module('starter.controllers', [])
   $scope.cartoes = $scope.user.cards;
   $scope.cardapio = null;
   $scope.restauranteId = "5830b26cbb25f4e2050f9bfa";
+  $scope.restauranteNome = "O nome pego pelo qrCode";
   $scope.mesa = 1;
   $scope.ContaID = null;
   $scope.showPagarTab = false;
@@ -235,7 +236,8 @@ angular.module('starter.controllers', [])
              var resultado = JSON.parse(barcodeData.text);
              $scope.restauranteId = resultado.id;
              $scope.mesa = resultado.mesa;
-               Restaurantes.getCardapios(resultado.id).then(function(data){
+             $scope.restauranteNome = resultado.nome;
+               Restaurantes.getCardapios($scope.restauranteId).then(function(data){
                  //TODO: Trocar para cardapio de dia e hora corretos
                  $scope.cardapio = data[0];
                  $ionicLoading.hide();
@@ -574,7 +576,7 @@ angular.module('starter.controllers', [])
           total = Number($scope.pedido.total) + Number($scope.conta.total);
         }
         Users.addPedido($scope.pedido.categorias, $scope.restauranteId, $scope.mesa, $scope.user.$id, $scope.ContaID, total);
-        Users.addPedidoUSER($scope.pedido.categorias, $scope.restauranteId, $scope.mesa, $scope.user.$id);
+        Users.addPedidoUSER($scope.pedido.categorias, $scope.restauranteId, $scope.mesa, $scope.user.$id, $scope.restauranteNome);
       }
       if($scope.conta.categorias.length == 0){
         $scope.conta = $scope.pedido;
@@ -665,6 +667,7 @@ angular.module('starter.controllers', [])
 })
 
 .controller('PagamentoCtrl', function($scope, userRef){
+  debugger;
   $scope.cartoes = userRef.cards;
 })
 
@@ -692,4 +695,8 @@ angular.module('starter.controllers', [])
     Users.addCard(cartao.numero, cartao.nome, cartao.mes, cartao.ano, userRef.$id);
     $state.go('perfil');
   }
+})
+
+.controller('HistoricoCtrl', function($scope, userRef){
+  $scope.historicos = userRef.restaurantes;
 });

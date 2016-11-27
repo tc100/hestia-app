@@ -1,0 +1,24 @@
+<ion-view view-title="Histórico">
+  <ion-content class="has-header">
+    <ion-list>
+      <div ng-repeat="restaurante in historicos">
+        <div class="item-divider">
+          {{restaurante.nome}}
+        </div>
+
+        <div ng-repeat="historico in restaurante.historicos">
+          <div ng-repeat="prato in historico.pratos">
+            <ion-item class="item-remove-animate item-icon-right pratos-cardapio" type="item-text-wrap" >
+              <label>{{prato.nome}}</label>
+              <label class = "pull-right"> R$ {{prato.preco}}</label>
+            </ion-item>
+            <ion-item class="item-remove-animate item-icon-right pratos-cardapio" type="item-text-wrap" ng-repeat="acompanhamento in prato.acompanhamentos">
+              <label style="padding-left:1em;">{{acompanhamento.nome}}</label>
+              <label class = "pull-right">R$ {{acompanhamento.preco}}</label>
+            </ion-item>
+          </div>
+        </div>
+      </div>
+    </ion-list>
+  </ion-content>
+</ion-view>

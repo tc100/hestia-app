@@ -73,13 +73,17 @@ angular.module('starter.services', [])
                 "ativo": true
             });
         },
-        addPedidoUSER: function(pedido, restauranteID, mesa, userID)
+        addPedidoUSER: function(pedido, restauranteID, mesa, userID, nomeRestaurante)
         {
-          var pedidoPush = firebase.database().ref('users/' + userID).child('historico').push();
+          var restPush = firebase.database().ref('users/' + userID +'/restaurantes/'+restauranteID);
+          console.log(restPush);
+          debugger;
+          restPush.update({"nome":nomeRestaurante});
+          var pedidoPush = firebase.database().ref('users/' + userID +'/restaurantes/'+restauranteID).child('historicos').push();
           var date = new Date();
           var data = date.getTime();
+          console.log(date+" data:"+data);
           pedidoPush.set({
-           "restaurante": restauranteID,
            "data": data
           });
           var pedidoKey = pedidoPush.key;
@@ -91,7 +95,7 @@ angular.module('starter.services', [])
               var prato = p.pratos[i];
               var nome = prato.nome;
               var preco = prato.preco;
-              var pratoPush = firebase.database().ref('users/' + userID+'/historico/'+pedidoKey).child('prato').push();
+              var pratoPush = firebase.database().ref('users/' + userID+'/restaurantes/'+restauranteID+'/historicos/'+pedidoKey).child('pratos').push();
               pratoPush.set({
                "nome": nome,
                "preco": preco
@@ -102,7 +106,7 @@ angular.module('starter.services', [])
                 var acomp = prato.acompanhamentos[j];
                 var acompnome = acomp.nome;
                 var acomppreco = acomp.preco;
-                var acompPush = firebase.database().ref('users/' + userID+'/historico/'+pedidoKey+'/prato/'+pratoKey).child('acompanhamento').push();
+                var acompPush = firebase.database().ref('users/' + userID+'/restaurantes/'+restauranteID+'/historicos/'+pedidoKey+'/pratos/'+pratoKey).child('acompanhamentos').push();
                 acompPush.set({
                  "nome": acompnome,
                  "preco": acomppreco
