@@ -44,8 +44,10 @@ angular.module('starter.controllers', [])
               'long': position.coords.longitude
             }
             for(x in data.data){
-              data.data[x].avaliacao = 0;
-              data.data[x].comentarios = 0;
+              if (typeof data.data[x].avaliacao == "undefined"){
+                data.data[x].avaliacao = 0;
+                data.data[x].comentario = 0;
+              }
               data.data[x].distancia = calculateDistance(userLocation,data.data[x].local);
               $scope.restaurantes.push(data.data[x]);
             }
@@ -54,8 +56,10 @@ angular.module('starter.controllers', [])
             console.error("error geolocation ");
             //TODO: trocar a cor dos botoes do popup
             for(x in data.data){
-              data.data[x].avaliacao = 0;
-              data.data[x].comentarios = 0;
+              if (typeof data.data[x].avaliacao == "undefined"){
+                data.data[x].avaliacao = 0;
+                data.data[x].comentario = 0;
+              }
               data.data[x].distancia = 0;
               $scope.restaurantes.push(data.data[x]);
             }
@@ -101,6 +105,7 @@ angular.module('starter.controllers', [])
       $state.go('restaurantes');
     }else{
       $scope.restaurante = $stateParams.restaurante;
+
       //Sobre
       var myLatLng = {lat: Number($scope.restaurante.local.lat), lng: Number($scope.restaurante.local.long)};
       var map = new google.maps.Map(document.getElementById('map'), {
@@ -123,6 +128,11 @@ angular.module('starter.controllers', [])
       //Avaliacoes
       $scope.avaliacoes = 0;
       //Fim Avaliacoes
+      // comentarios
+
+    if(typeof $scope.restaurante.comentarios != 'undefined')
+      $scope.comentarios = $scope.restaurante.comentarios;
+      // fim comentarios
     }
   });
 })
@@ -179,7 +189,7 @@ angular.module('starter.controllers', [])
   }
 })
 
-.controller('LeitorCtrl', function($scope, $ionicTabsDelegate, $state, $cordovaBarcodeScanner, userRef, Users, Restaurantes, $ionicLoading, $ionicPopup, $ionicModal) {
+.controller('LeitorCtrl', function($scope, Restaurantes, $ionicTabsDelegate, $state, $cordovaBarcodeScanner, userRef, Users, Restaurantes, $ionicLoading, $ionicPopup, $ionicModal) {
   $scope.user = userRef;
   $scope.cartoes = $scope.user.cards;
   $scope.cardapio = null;
@@ -389,27 +399,91 @@ angular.module('starter.controllers', [])
 
    $scope.showAvaliacao = function()
    {
+     //Setting the default values, if they are not passed
+     $scope.rating = 0;
+     $scope.minRating = 0;
+
+     //Setting the rating
+     $scope.rating = ($scope.rating > $scope.minRating) ? $scope.rating : $scope.minRating;
+
      var textModal = '<ion-modal-view>' +
                        '<ion-header-bar>' +
                          '<h1 class="title">Avaliação</h1>' +
                        '</ion-header-bar>' +
                        '<ion-content class="avaliacao">' +
-                         '<ion-item class="item item-input-inset"><label class="item-input-wrapper">'+
-                           '<input type ="text" placeholder = "Comentário" ng-model="avaliacao.comentario"> </label>'+
+                       '<ion-item class="item text-center ionic_ratings">'+
+                         '<span class="icon ion-ios-star-outline ionic_rating_icon_off" ng-click="ratingsClicked(1)" ng-if="rating < 1" ></span>' +
+                         '<span class="icon ion-ios-star ionic_rating_icon_on"  ng-click="ratingsUnClicked(1)" ng-if="rating > 0" ></span>' +
+                         '<span class="icon ion-ios-star-outline ionic_rating_icon_off"  ng-click="ratingsClicked(2)" ng-if="rating < 2" ></span>' +
+                         '<span class="icon ion-ios-star ionic_rating_icon_on"  ng-click="ratingsUnClicked(2)" ng-if="rating > 1" ></span>' +
+                         '<span class="icon ion-ios-star-outline ionic_rating_icon_off"  ng-click="ratingsClicked(3)" ng-if="rating < 3" ></span>' +
+                         '<span class="icon ion-ios-star ionic_rating_icon_on"  ng-click="ratingsUnClicked(3)" ng-if="rating > 2" ></span>' +
+                         '<span class="icon ion-ios-star-outline ionic_rating_icon_off"  ng-click="ratingsClicked(4)" ng-if="rating < 4" ></span>' +
+                         '<span class="icon ion-ios-star ionic_rating_icon_on"  ng-click="ratingsUnClicked(4)" ng-if="rating > 3" ></span>' +
+                         '<span class="icon ion-ios-star-outline ionic_rating_icon_off"  ng-click="ratingsClicked(5)" ng-if="rating < 5" ></span>' +
+                         '<span class="icon ion-ios-star ionic_rating_icon_on"  ng-click="ratingsUnClicked(5)" ng-if="rating > 4" ></span>' +
+                       '</ion-item>'+
+                         '<ion-item class="item item-input-inset">'+
+                          '<label class="item-input-wrapper">'+
+                           '<input type ="text" placeholder = "Comentário" ng-model="cartao.numero">'+
+                          '</label>'+
                          '</ion-item>'+
                         '</ion-content>' +
                        '<div class="footer-pedido">' +
-                       '<button class="button button-full btn-footer" ng-click="closeModal()">Enviar Avaliação</button></div>' +
+                       '<button class="button button-full btn-footer" ng-click="avaliar(cartao)">Enviar Avaliação</button></div>' +
                      '</ion-modal-view>';
 
        $scope.modal =  $ionicModal.fromTemplate(textModal, {
          scope: $scope,
          animation: 'slide-in-up'
        });
+       //Setting the previously selected rating
+       $scope.prevRating = 0;
+
+       $scope.avaliar = function(comentario)
+       {
+         //cosole.log(comentario);
+         var comentarioX = "testando " + $scope.rating;
+         var userEmail = userRef.email;
+         var nota = Number($scope.rating);
+         Restaurantes.postComentarios($scope.restauranteId,nota,comentarioX,userEmail);
+         $scope.closeModal();
+       }
+       function setRating(val, uiEvent) {
+         if ($scope.minRating !== 0 && val < $scope.minRating) {
+           $scope.rating = $scope.minRating;
+         } else {
+           $scope.rating = val;
+         }
+         $scope.prevRating = val;
+      }
+
+       //Called when he user clicks on the rating
+       $scope.ratingsClicked = function(val) {
+         setRating(val, true);
+       };
+
+       //Called when he user un clicks on the rating
+       $scope.ratingsUnClicked = function(val) {
+         if ($scope.minRating !== 0 && val < $scope.minRating) {
+           $scope.rating = $scope.minRating;
+         } else {
+           $scope.rating = val;
+         }
+         if ($scope.prevRating == val) {
+           if ($scope.minRating !== 0) {
+             $scope.rating = $scope.minRating;
+           } else {
+             $scope.rating = 0;
+           }
+         }
+         $scope.prevRating = val;
+       };
 
        $scope.openModal = function() {
          $scope.modal.show();
        };
+
        $scope.openModal();
 
        $scope.closeModal = function() {

@@ -206,3 +206,20 @@
   font-size: 1em;
   background-color:#C84C00;
 }
+
+.ionic_ratings .icon {
+  font-size:50px;
+}
+.ionic_ratings-20 .icon {
+  font-size:20px;
+}
+
+.ionic_ratings .read_only {
+  pointer-events:none;
+}
+.ionic_rating_icon_off{
+  color: rgb(200, 100, 100)
+}
+.ionic_rating_icon_on{
+  color: rgb(200, 200, 100)
+}

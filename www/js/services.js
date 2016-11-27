@@ -3,7 +3,7 @@ angular.module('starter.services', [])
 .factory('Restaurantes', function($http, ApiEndpoint){
     return {
       getListaRestaurantes: function(){
-        return $http.get(ApiEndpoint.url+"/estabelecimentos").then(function( data){
+        return $http.get(ApiEndpoint.url+'/estabelecimentos').then(function( data){
           console.log("Data: " + data);
             return data;
         },function(error){
@@ -15,6 +15,21 @@ angular.module('starter.services', [])
         .then(function(data){
           console.log("data: " + JSON.stringify(data));
             return data.data;
+        })
+      },
+      postComentarios: function(idRestaurante, nota, comentario, userEmail)
+      {
+        var dataPost = {
+          "restaurante":idRestaurante,
+          "comentario":{
+            "comentario":comentario,
+            "email":userEmail,
+            "nota":nota
+          }
+        }
+        return $http.post(ApiEndpoint.url+'/comentarios', dataPost)
+        .then(function(data){
+          console.log("data: " + JSON.stringify(data));
         })
       }
     }
@@ -87,6 +102,32 @@ angular.module('starter.services', [])
               }
             }
           }
+        },
+
+        rate: function (restauranteID, nota, comentario, userEmail)
+        {
+          var restauranteRef = firebase.database().ref('restaurantes/'+restauranteID);
+          restauranteRef.once("value", function(snapshot) {
+            var restaurante = JSON.parse(JSON.stringify(snapshot.val()));
+            if (typeof restaurante.nota == 'undefined')
+            {
+              restauranteRef.update({"nota": nota, "avaliacoes": 1});
+              restauranteRef = firebase.database().ref('restaurantes/'+restauranteID);
+            }
+            else{
+              var avaliacoes = restaurante.avaliacoes+1;
+              var totalAntigo = restaurante.nota*restaurante.avaliacoes;
+              var media = (totalAntigo+nota)/avaliacoes;
+              media = Math.round(media * 100) / 100
+              restauranteRef.update({"nota":media, "avaliacoes":avaliacoes});
+            }
+          });
+          var comentariosPush = firebase.database().ref('restaurantes/'+restauranteID).child('comentarios').push();
+          comentariosPush.set({
+            "comentario":comentario,
+            "nota": nota,
+            "email": userEmail
+          });
         },
         addConta: function (restauranteID,userID)
         {

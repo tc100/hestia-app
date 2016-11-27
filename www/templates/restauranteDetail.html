@@ -7,7 +7,7 @@
         <p class="titulo-restaurante">{{restaurante.nomerestaurante}}</p>
         <p class="icones-restaurante">
             <i class="icon ion-ios-star"> {{restaurante.avaliacao}}</i>
-            <i class="icon ion-chatbox"> {{restaurante.comentarios}}</i>
+            <i class="icon ion-chatbox"> {{restaurante.comentario}}</i>
             <i class="icon ion-location"> {{restaurante.distancia}}</i>
         </p>
       </div>
@@ -45,39 +45,26 @@
         </ion-tab>
         <ion-tab title="Avaliações" icon-on="ion-ios-star" icon-off="ion-ios-star">
           <ion-content has-header="true" style="top:34%; height: 100%;" class="tabsDetail">
-            <div class="row">
-                <div class="col col-33" style="text-align: right">
-                  Geral:
+            <ion-list>
+              <div ng-repeat="comentario in comentarios">
+                <div class="item ionic_ratings-20">
+                  <span class="icon ion-ios-star-outline ionic_rating_icon_off" ng-if="comentario.nota < 1" ></span>
+                  <span class="icon ion-ios-star ionic_rating_icon_on"  ng-if="comentario.nota > 0" ></span>
+                  <span class="icon ion-ios-star-outline ionic_rating_icon_off"   ng-if="comentario.nota < 2" ></span>
+                  <span class="icon ion-ios-star ionic_rating_icon_on"  ng-if="comentario.nota > 1" ></span>
+                  <span class="icon ion-ios-star-outline ionic_rating_icon_off"   ng-if="comentario.nota < 3" ></span>
+                  <span class="icon ion-ios-star ionic_rating_icon_on"  ng-if="comentario.nota > 2" ></span>
+                  <span class="icon ion-ios-star-outline ionic_rating_icon_off"   ng-if="comentario.nota < 4" ></span>
+                  <span class="icon ion-ios-star ionic_rating_icon_on"  ng-if="comentario.nota > 3" ></span>
+                  <span class="icon ion-ios-star-outline ionic_rating_icon_off"  ng-if="comentario.nota < 5" ></span>
+                  <span class="icon ion-ios-star ionic_rating_icon_on"  ng-if="comentario.nota > 4" ></span>
+                  <b>{{comentario.email}}</b>
                 </div>
-                <div class="col col-66" style="text-align: left">
-                  <i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i>
+                <div>
+                  {{comentario.comentario}}
                 </div>
-            </div>
-            <div class="row">
-                <div class="col col-33" style="text-align: right">
-                  Comida:
-                </div>
-                <div class="col col-66" style="text-align: left">
-                  <i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col col-33" style="text-align: right">
-                  Atendimento:
-                </div>
-                <div class="col col-66" style="text-align: left">
-                  <i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col col-33" style="text-align: right">
-                  Limpeza:
-                </div>
-                <div class="col col-66" style="text-align: left">
-                  <i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i><i class="icon ion-ios-star"></i>
-                </div>
-            </div>
-            </div>
+              </div>
+            </ion-list>
           </ion-content>
         </ion-tab>
     </ion-tabs>
