@@ -1,6 +1,6 @@
 angular.module('starter.services', [])
 
-.factory('Restaurantes', function($http, ApiEndpoint){
+.factory('Restaurantes', function($http, ApiEndpoint, $httpParamSerializer){
     return {
       getListaRestaurantes: function(){
         return $http.get(ApiEndpoint.url+'/estabelecimentos').then(function( data){
@@ -19,16 +19,24 @@ angular.module('starter.services', [])
       },
       postComentarios: function(idRestaurante, nota, comentario, userEmail)
       {
-        var dataPost = {
-          "restaurante":idRestaurante,
-          "comentario":{
-            "comentario":comentario,
-            "email":userEmail,
-            "nota":nota
-          }
+
+        var data = {
+                restaurante: idRestaurante,
+                comentario: {
+                  email: userEmail,
+                  nota: nota,
+                  comentario: comentario
+                }
+              };
+        var req = {
+           method: 'POST',
+           url: ApiEndpoint.url+'/comentarios?'+$httpParamSerializer(data),
+           headers: {
+               'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8;'
+           },
+           data: $httpParamSerializer(data)
         }
-        return $http.post(ApiEndpoint.url+'/comentarios', dataPost)
-        .then(function(data){
+        $http(req).then(function(data){
           console.log("data: " + JSON.stringify(data));
         })
       }

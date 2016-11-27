@@ -8,7 +8,7 @@
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'firebase', 'ngCordova'])
 .constant('ApiEndpoint', {
   //url: 'https://hestia-api2.mybluemix.net/apihestia'
-  url:'https://www.localhost:6001/apihestia'
+  url:'http://www.localhost:6001/apihestia'
 })
 .value('userRef', {})
 .config(function($ionicConfigProvider) {
