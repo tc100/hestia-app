@@ -77,7 +77,6 @@ angular.module('starter.services', [])
         {
           var restPush = firebase.database().ref('users/' + userID +'/restaurantes/'+restauranteID);
           console.log(restPush);
-          debugger;
           restPush.update({"nome":nomeRestaurante});
           var pedidoPush = firebase.database().ref('users/' + userID +'/restaurantes/'+restauranteID).child('historicos').push();
           var date = new Date();

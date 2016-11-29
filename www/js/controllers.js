@@ -137,13 +137,17 @@ angular.module('starter.controllers', [])
   });
 })
 
-.controller('LoginCtrl', function($scope, $state, $firebaseAuth, Users, $ionicHistory) {
+.controller('LoginCtrl', function($scope, $state, $firebaseAuth, Users, $ionicHistory, $ionicPopup) {
   $scope.authObj = $firebaseAuth();
   $scope.login = function(email,password){
     $scope.authObj.$signInWithEmailAndPassword(email, password).then(function(firebaseUser) {
     }).catch(function(error) {
-      console.error("Authentication failed:", error);
-      alert(error);
+      $scope.showAlert = function() {
+       var alertPopup = $ionicPopup.alert({
+         template: 'Usuario ou senha incorretos.'
+       });
+      };
+      $scope.showAlert();
     });
   }
 
@@ -156,7 +160,12 @@ angular.module('starter.controllers', [])
       // Never called because of page redirect
     }).catch(function(error) {
       console.error("Authentication failed:", error);
-      alert(error);
+      $scope.showAlert = function() {
+       var alertPopup = $ionicPopup.alert({
+         template: 'Erro ao conectar com o facebook.'
+       });
+      };
+      $scope.showAlert();
     });
   }
 
@@ -407,7 +416,6 @@ angular.module('starter.controllers', [])
 
      //Setting the rating
      $scope.rating = ($scope.rating > $scope.minRating) ? $scope.rating : $scope.minRating;
-
      var textModal = '<ion-modal-view>' +
                        '<ion-header-bar>' +
                          '<h1 class="title">Avaliação</h1>' +
@@ -427,12 +435,12 @@ angular.module('starter.controllers', [])
                        '</ion-item>'+
                          '<ion-item class="item item-input-inset">'+
                           '<label class="item-input-wrapper">'+
-                           '<input type ="text" placeholder = "Comentário" ng-model="cartao.numero">'+
+                           '<input type ="text" placeholder="Comentário" id="comentario">'+
                           '</label>'+
                          '</ion-item>'+
                         '</ion-content>' +
                        '<div class="footer-pedido">' +
-                       '<button class="button button-full btn-footer" ng-click="avaliar(cartao)">Enviar Avaliação</button></div>' +
+                       '<button class="button button-full btn-footer" ng-click="avaliar()">Enviar Avaliação</button></div>' +
                      '</ion-modal-view>';
 
        $scope.modal =  $ionicModal.fromTemplate(textModal, {
@@ -442,13 +450,11 @@ angular.module('starter.controllers', [])
        //Setting the previously selected rating
        $scope.prevRating = 0;
 
-       $scope.avaliar = function(comentario)
-       {
-         //cosole.log(comentario);
-         var comentarioX = "testando " + $scope.rating;
+       $scope.avaliar = function() {
+         var comentario = document.getElementById("comentario").value;
          var userEmail = userRef.email;
          var nota = Number($scope.rating);
-         Restaurantes.postComentarios($scope.restauranteId,nota,comentarioX,userEmail);
+         Restaurantes.postComentarios($scope.restauranteId,nota,comentario,userEmail);
          $scope.closeModal();
        }
        function setRating(val, uiEvent) {
@@ -667,7 +673,6 @@ angular.module('starter.controllers', [])
 })
 
 .controller('PagamentoCtrl', function($scope, userRef){
-  debugger;
   $scope.cartoes = userRef.cards;
 })
 
