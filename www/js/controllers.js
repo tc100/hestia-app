@@ -245,7 +245,7 @@ angular.module('starter.controllers', [])
              var resultado = JSON.parse(barcodeData.text);
              $scope.restauranteId = resultado.id;
              $scope.mesa = resultado.mesa;
-             $scope.restauranteNome = resultado.nome;
+             $scope.restauranteNome = resultado.nomerestaurante;
                Restaurantes.getCardapios($scope.restauranteId).then(function(data){
                  //TODO: Trocar para cardapio de dia e hora corretos
                  $scope.cardapio = data[0];
@@ -289,7 +289,6 @@ angular.module('starter.controllers', [])
                                 '<label class="checkbox">' +
                                   '<input type="checkbox" ng-model="acompanhamento'+x+'" ng-true-value="'+x+'" ng-false-value=null ng-change="checkAcompanhamento(acompanhamento'+x+')">' +
                                 '</label>' +
-                                //TODO: Trocar para aparecer nome e preco com a atualizacao da API e WEB
                                 prato.acompanhamentos[x].nome  +
                                 '<span class="pull-right" ng-show="numeroDeAcompanhamentos==0 ? true : false">' + prato.acompanhamentos[x].preco +
                               '</span></ion-item>';

@@ -7,7 +7,7 @@
     <!-- TODO: Trocar icone de location para algum de sobre -->
     <ion-tab title="Cardapio" icon-on="ion-ios-book" icon-off="ion-ios-book-outline">
       <ion-content has-header="true" style="top: 9%;height: 100%;">
-        <p ng-if="cardapio == null">Scanneie o QR Code da mesa para carregar o cardapio</p>
+        <p class="aviso-cardapio" ng-if="cardapio == null">Scanneie o QR Code da mesa para carregar o cardapio</p>
         <ion-list>
           <div ng-repeat="categoria in cardapio.categorias">
             <ion-item class="item-stable" ng-click="toggleGroup(categoria)" ng-class="{active: isGroupShown(categoria)}">
@@ -47,7 +47,7 @@
           <div class="item-divider" type="item-text-wrap" ng-if="pedido.total != 0">
             Total: R$ {{pedido.total}}
           </div>
-          <p ng-if="pedido.total == 0">Vá na aba Cardapio e adicione algo para fazer o pedido</p>
+          <p class="aviso-cardapio" ng-if="pedido.total == 0">Vá na aba Cardapio e adicione algo para fazer o pedido</p>
         </ion-scroll>
         <button class="button button-full total-cardapio" ng-click="sendPedido()">
           Fazer Pedido

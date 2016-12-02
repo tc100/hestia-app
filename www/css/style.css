@@ -116,7 +116,7 @@
 }
 .icones-restaurante{
   text-align: center;
-  font-size: 1.3em;
+  font-size: 1em;
   position: absolute;
 }
 
@@ -152,6 +152,8 @@
 
 .tabsDetail{
   margin-top: 1em !important;
+  top:34% !important;
+  height: 65% !important;
 }
 
 #map {
@@ -192,6 +194,7 @@
   width: 100%;
   height: 2em;
   border: 1px solid black !important;
+  bottom:1em;
 }
 
 .footer-pedido{
@@ -232,4 +235,8 @@
 }
 .ionic_rating_icon_on{
   color: rgb(200, 200, 100)
+}
+
+.aviso-cardapio{
+  margin-top:2em !important;
 }
