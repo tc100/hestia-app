@@ -248,7 +248,7 @@ angular.module('starter.controllers', [])
              $scope.restauranteNome = resultado.nomerestaurante;
                Restaurantes.getCardapios($scope.restauranteId).then(function(data){
                  //TODO: Trocar para cardapio de dia e hora corretos
-                 $scope.cardapio = data[0];
+                 $scope.cardapio = JSON.parse(data);
                  $ionicLoading.hide();
                }, function(err){
                  console.erro("erro ao pegar cardapio");

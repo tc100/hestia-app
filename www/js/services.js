@@ -13,8 +13,16 @@ angular.module('starter.services', [])
       getCardapios: function (idRestaurante){
         return $http.get(ApiEndpoint.url+'/cardapios?restaurante='+idRestaurante)
         .then(function(data){
-          console.log("data: " + JSON.stringify(data));
-            return data.data;
+            var cardapio = "";
+            for(x in data.data){
+                if(data.data[x].ativo == "true"){
+                    cardapio = data[x];
+                }
+            }
+            if(cardapio == ""){
+                cardapio = data.data[0];
+            }
+            return cardapio;
         })
       },
       postComentarios: function(idRestaurante, nota, comentario, userEmail)
