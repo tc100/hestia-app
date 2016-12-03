@@ -78,6 +78,14 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     templateUrl: 'templates/historico.html',
     controller: 'HistoricoCtrl'
   })
+  .state('historicoDetail', {
+    url: '/historicoDetail',
+    templateUrl: 'templates/historicoDetalhes.html',
+    controller: "HistoricoDtlCtrl",
+    params: {
+      historico: null
+    }
+  })
   .state('cartao', {
     url: '/cartao',
     templateUrl: 'templates/cartao.html',

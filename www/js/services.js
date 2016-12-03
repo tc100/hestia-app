@@ -16,7 +16,7 @@ angular.module('starter.services', [])
             var cardapio = "";
             for(x in data.data){
                 if(data.data[x].ativo == "true"){
-                    cardapio = data[x];
+                    cardapio = data.data[x];
                 }
             }
             if(cardapio == ""){
@@ -81,48 +81,6 @@ angular.module('starter.services', [])
                 "ativo": true
             });
         },
-        addPedidoUSER: function(pedido, restauranteID, mesa, userID, nomeRestaurante)
-        {
-          var restPush = firebase.database().ref('users/' + userID +'/restaurantes/'+restauranteID);
-          console.log(restPush);
-          restPush.update({"nome":nomeRestaurante});
-          var pedidoPush = firebase.database().ref('users/' + userID +'/restaurantes/'+restauranteID).child('historicos').push();
-          var date = new Date();
-          var data = date.getTime();
-          console.log(date+" data:"+data);
-          pedidoPush.set({
-           "data": data
-          });
-          var pedidoKey = pedidoPush.key;
-          for (var x = 0; x < pedido.length; x++)
-          {
-            var p = pedido[x];
-            for(var i= 0 ; i  < p.pratos.length; i++)
-            {
-              var prato = p.pratos[i];
-              var nome = prato.nome;
-              var preco = prato.preco;
-              var pratoPush = firebase.database().ref('users/' + userID+'/restaurantes/'+restauranteID+'/historicos/'+pedidoKey).child('pratos').push();
-              pratoPush.set({
-               "nome": nome,
-               "preco": preco
-              });
-              var pratoKey = pratoPush.key;
-              for (var j = 0; j < prato.acompanhamentos.length; j++)
-              {
-                var acomp = prato.acompanhamentos[j];
-                var acompnome = acomp.nome;
-                var acomppreco = acomp.preco;
-                var acompPush = firebase.database().ref('users/' + userID+'/restaurantes/'+restauranteID+'/historicos/'+pedidoKey+'/pratos/'+pratoKey).child('acompanhamentos').push();
-                acompPush.set({
-                 "nome": acompnome,
-                 "preco": acomppreco
-                });
-              }
-            }
-          }
-        },
-
         rate: function (restauranteID, nota, comentario, userEmail)
         {
           var restauranteRef = firebase.database().ref('restaurantes/'+restauranteID);
@@ -200,6 +158,45 @@ angular.module('starter.services', [])
                 var acompnome = acomp.nome;
                 var acomppreco = acomp.preco;
                 var acompPush = firebase.database().ref('restaurantes/'+restauranteID+"/contas/"+contaID+'/pedidos/'+pedidoKey+'/prato/'+pratoKey).child('acompanhamento').push();
+                acompPush.set({
+                 "nome": acompnome,
+                 "preco": acomppreco
+                });
+              }
+            }
+          }
+        },
+        addHistorico: function(pedido, restauranteNome, mesa, userID,histID, total)
+        {
+          var contaPush = firebase.database().ref('users/' + userID+'/historicos/'+histID);
+          var date = new Date();
+          var data = date.getTime();
+          contaPush.update({"total": total, "restaurante":restauranteNome, "data":data});
+          var pedidoPush = firebase.database().ref('users/' + userID+'/historicos/'+histID).child('pedidos').push();
+          pedidoPush.set({
+           "mesa": mesa
+          });
+          var pedidoKey = pedidoPush.key;
+          for (var x = 0; x < pedido.length; x++)
+          {
+            var p = pedido[x];
+            for(var i= 0 ; i  < p.pratos.length; i++)
+            {
+              var prato = p.pratos[i];
+              var nome = prato.nome;
+              var preco = prato.preco;
+              var pratoPush = firebase.database().ref('users/' + userID+'/historicos/'+histID+'/pedidos/'+pedidoKey).child('pratos').push();
+              pratoPush.set({
+               "nome": nome,
+               "preco": preco
+              });
+              var pratoKey = pratoPush.key;
+              for (var j = 0; j < prato.acompanhamentos.length; j++)
+              {
+                var acomp = prato.acompanhamentos[j];
+                var acompnome = acomp.nome;
+                var acomppreco = acomp.preco;
+                var acompPush = firebase.database().ref('users/' + userID+'/historicos/'+histID+'/pedidos/'+pedidoKey+'/pratos/'+pratoKey).child('acompanhamentos').push();
                 acompPush.set({
                  "nome": acompnome,
                  "preco": acomppreco

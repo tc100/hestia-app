@@ -202,9 +202,9 @@ angular.module('starter.controllers', [])
   $scope.user = userRef;
   $scope.cartoes = $scope.user.cards;
   $scope.cardapio = null;
-  $scope.restauranteId = "5830b26cbb25f4e2050f9bfa";
-  $scope.restauranteNome = "O nome pego pelo qrCode";
-  $scope.mesa = 1;
+  $scope.restauranteId = "";
+  $scope.restauranteNome = "";
+  $scope.mesa = 0;
   $scope.ContaID = null;
   $scope.showPagarTab = false;
   $scope.pedido = {
@@ -217,23 +217,11 @@ angular.module('starter.controllers', [])
   };
   $scope.$on('$ionicView.enter', function() {
     if($scope.cardapio == null){
-      //$scope.readQRCode();
+      $scope.readQRCode();
     }
-  /*  Restaurantes.getCardapios("5830b26cbb25f4e2050f9bfa").then(function(data){
-      //TODO: TIRAR ESSA PARTE COLOCAR ALERTA
-      $scope.cardapio = data[0];
-      $ionicLoading.hide();
-    })*/
   });
-  Restaurantes.getCardapios($scope.restauranteId).then(function(data){
-    //TODO: Trocar para cardapio de dia e hora corretos
-    $scope.cardapio = data[0];
-    $ionicLoading.hide();
-  }, function(err){
-    console.erro("erro ao pegar cardapio");
-    $ionicLoading.hide();
-  });
-  /*$scope.readQRCode = function(){
+
+  $scope.readQRCode = function(){
       document.addEventListener("deviceready", function () {
        $cordovaBarcodeScanner
          .scan()
@@ -246,14 +234,14 @@ angular.module('starter.controllers', [])
              $scope.restauranteId = resultado.id;
              $scope.mesa = resultado.mesa;
              $scope.restauranteNome = resultado.nomerestaurante;
-               Restaurantes.getCardapios($scope.restauranteId).then(function(data){
-                 //TODO: Trocar para cardapio de dia e hora corretos
-                 $scope.cardapio = JSON.parse(data);
-                 $ionicLoading.hide();
-               }, function(err){
-                 console.erro("erro ao pegar cardapio");
-                 $ionicLoading.hide();
-               });
+             Restaurantes.getCardapios($scope.restauranteId).then(function(data){
+               $scope.cardapio = data;
+               $ionicLoading.hide();
+             }, function(err){
+               console.erro("erro ao pegar cardapio");
+               $ionicLoading.hide();
+            });
+
             }else{
               $ionicLoading.hide();
             }
@@ -267,8 +255,7 @@ angular.module('starter.controllers', [])
           "prompt" : "Scanneie o QRCode",
           "formats" : "QR_CODE"
       });
-  }*/
-
+  }
   //adicionar pratos
   $scope.prepareAddPrato = function(categoria, prato){
     $scope.quantidadeAcompanhamento = 0;
@@ -581,7 +568,7 @@ angular.module('starter.controllers', [])
           total = Number($scope.pedido.total) + Number($scope.conta.total);
         }
         Users.addPedido($scope.pedido.categorias, $scope.restauranteId, $scope.mesa, $scope.user.$id, $scope.ContaID, total);
-        Users.addPedidoUSER($scope.pedido.categorias, $scope.restauranteId, $scope.mesa, $scope.user.$id, $scope.restauranteNome);
+        Users.addHistorico($scope.pedido.categorias, $scope.restauranteNome, $scope.mesa, $scope.user.$id, $scope.ContaID, total);
       }
       if($scope.conta.categorias.length == 0){
         $scope.conta = $scope.pedido;
@@ -701,6 +688,26 @@ angular.module('starter.controllers', [])
   }
 })
 
-.controller('HistoricoCtrl', function($scope, userRef){
-  $scope.historicos = userRef.restaurantes;
+.controller('HistoricoCtrl', function($scope, userRef, $state){
+  $scope.historicos = userRef.historicos;
+  for(x in $scope.historicos)
+  {
+    var time = new Date($scope.historicos[x].data);
+    var data = ""+time.getDay()+"/"+time.getMonth()+"/"+time.getYear()+" "+time.getHours()+":"+time.getMinutes();
+    $scope.historicos[x].dataformat = data;
+  }
+  $scope.loadHistorico = function(historico){
+    $state.go('historicoDetail',{'historico': historico});
+  }
+})
+
+.controller('HistoricoDtlCtrl', function($scope, $ionicLoading, $stateParams, $state, $cordovaGeolocation, $ionicLoading){
+
+  $scope.$on('$ionicView.enter', function() {
+    if($stateParams.historico == null){
+      $state.go('historico');
+    }else{
+      $scope.historico = $stateParams.historico;
+    }
+  })
 });
