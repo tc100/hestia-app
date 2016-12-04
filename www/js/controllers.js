@@ -156,7 +156,7 @@ angular.module('starter.controllers', [])
   }
 
   $scope.loginFacebook = function(){
-    $scope.authObj.$signInWithRedirect("facebook").then(function() {
+    $scope.authObj.$authWithOAuthPopup("facebook").then(function(authData) {
       // Never called because of page redirect
     }).catch(function(error) {
       console.error("Authentication failed:", error);
