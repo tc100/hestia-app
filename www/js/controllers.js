@@ -137,7 +137,7 @@ angular.module('starter.controllers', [])
   });
 })
 
-.controller('LoginCtrl', function($scope, $state, $firebaseAuth, Users, $ionicHistory, $ionicPopup) {
+.controller('LoginCtrl', function($scope, $state, $firebaseAuth, Users, $ionicHistory, $ionicPopup, $cordovaOauth) {
   $scope.authObj = $firebaseAuth();
   $scope.login = function(email,password){
     $scope.authObj.$signInWithEmailAndPassword(email, password).then(function(firebaseUser) {
@@ -156,7 +156,13 @@ angular.module('starter.controllers', [])
   }
 
   $scope.loginFacebook = function(){
-    $scope.authObj.$authWithOAuthPopup("facebook").then(function(authData) {
+    $cordovaOauth.facebook("1698619603791510", ["email"]).then(function(result) {
+        //implementar
+      }, function(error) {
+      alert("error: " + error)
+
+    });
+  /*  $scope.authObj.$authWithOAuthPopup("facebook").then(function(authData) {
       // Never called because of page redirect
     }).catch(function(error) {
       console.error("Authentication failed:", error);
@@ -165,8 +171,9 @@ angular.module('starter.controllers', [])
          template: 'Erro ao conectar com o facebook.'
        });
       };
+      alert(JSON.stringify(error));
       $scope.showAlert();
-    });
+    });*/
   }
 
   $scope.authObj.$onAuthStateChanged(function(firebaseUser) {
@@ -183,13 +190,17 @@ angular.module('starter.controllers', [])
   });
 })
 
-.controller('RegisterCtrl', function($scope, $state, $firebaseAuth, Users) {
+.controller('RegisterCtrl', function($scope, $state, $firebaseAuth, Users, $ionicHistory) {
   $scope.authObj = $firebaseAuth();
   $scope.registrar = function(name, lastname,email,password){
     $scope.authObj.$createUserWithEmailAndPassword(email,password)
       .then(function(firebaseUser) {
           console.log("User " + firebaseUser.uid + " created successfully!");
           Users.addNewUser(email, name, lastname, firebaseUser.uid);
+          $ionicHistory.nextViewOptions({
+            disableAnimate: true,
+            disableBack: true
+          });
           $state.go('restaurantes');
       }).catch(function(error) {
           console.error("Error: ", error);

@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'firebase', 'ngCordova'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'firebase', 'ngCordova', 'ngCordovaOauth'])
 .constant('ApiEndpoint', {
   url: 'https://hestia-api2.mybluemix.net/apihestia'
   //url:'http://www.localhost:6001/apihestia'
