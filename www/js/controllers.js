@@ -137,7 +137,7 @@ angular.module('starter.controllers', [])
   });
 })
 
-.controller('LoginCtrl', function($scope, $state, $firebaseAuth, Users, $ionicHistory, $ionicPopup, $cordovaOauth) {
+.controller('LoginCtrl', function($scope, $state, $firebaseAuth, Users, $ionicHistory, $ionicPopup, $cordovaOauth, userRef, $firebaseObject) {
   $scope.authObj = $firebaseAuth();
   $scope.login = function(email,password){
     $scope.authObj.$signInWithEmailAndPassword(email, password).then(function(firebaseUser) {
@@ -180,9 +180,9 @@ angular.module('starter.controllers', [])
     if (firebaseUser) {
       console.log("Signed in as:", firebaseUser.uid);
       $ionicHistory.nextViewOptions({
-      disableAnimate: true,
-      disableBack: true
-    });
+        disableAnimate: true,
+        disableBack: true
+      });
       $state.go("restaurantes");
     } else {
       console.log("Signed out");
@@ -655,14 +655,18 @@ angular.module('starter.controllers', [])
 })
 
 .controller('PerfilCtrl', function($scope, userRef,  $state) {
-  $scope.user = userRef;
+  $scope.$on('$ionicView.enter', function() {
+      $scope.user = userRef;
+  });
   $scope.editarCadastro = function(){
     $state.go('perfiledit');
   }
 })
 
 .controller('PerfilEdtCtrl', function($scope, $state, Users, userRef) {
-  $scope.user = userRef;
+  $scope.$on('$ionicView.enter', function() {
+      $scope.user = userRef;
+  });
   $scope.atualizar = function(user){
     Users.updateUser(user.email, user.nome, user.sobrenome, $scope.user.$id);
     $state.go('perfil');
@@ -670,7 +674,9 @@ angular.module('starter.controllers', [])
 })
 
 .controller('PagamentoCtrl', function($scope, userRef){
-  $scope.cartoes = userRef.cards;
+  $scope.$on('$ionicView.enter', function() {
+    $scope.cartoes = userRef.cards;
+  });
 })
 
 .controller('CardapioCtrl', function($scope, $state, Restaurantes, $ionicLoading){
@@ -700,7 +706,9 @@ angular.module('starter.controllers', [])
 })
 
 .controller('HistoricoCtrl', function($scope, userRef, $state){
-  $scope.historicos = userRef.historicos;
+  $scope.$on('$ionicView.enter', function() {
+    $scope.historicos = userRef.historicos;
+  });
   for(x in $scope.historicos)
   {
     var time = new Date($scope.historicos[x].data);
@@ -713,7 +721,6 @@ angular.module('starter.controllers', [])
 })
 
 .controller('HistoricoDtlCtrl', function($scope, $ionicLoading, $stateParams, $state, $cordovaGeolocation, $ionicLoading){
-
   $scope.$on('$ionicView.enter', function() {
     if($stateParams.historico == null){
       $state.go('historico');
